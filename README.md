@@ -9,3 +9,6 @@
 
 ### TODO List:
 - [ ] Define DB structure
+
+### Database Scheme:
+This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2GqZGYSDZ8)
