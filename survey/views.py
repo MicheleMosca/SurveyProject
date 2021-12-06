@@ -1,5 +1,16 @@
-from django.http import HttpResponse
+from django.shortcuts import render
+from django.contrib.auth.forms import UserCreationForm
 
 
-def IndexView(request):
-    return HttpResponse("This is the index page of the survey site.")
+def indexView(request):
+    return render(request, 'survey/index.html')
+
+
+def registerPage(request):
+    form = UserCreationForm()
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+    return render(request, 'survey/register.html', {'form': form})
