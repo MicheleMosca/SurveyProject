@@ -6,7 +6,7 @@ def indexView(request):
     return render(request, 'survey/index.html')
 
 
-def registerPage(request):
+def registerView(request):
     form = CreateUserForm()
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
