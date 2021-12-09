@@ -1,8 +1,27 @@
 <h1>Register</h1>
 
-<form method="post" action="">
+<form method="POST" action="">
     {% csrf_token %}
-    {{ form.as_p }}
 
+    {{ form.username.label }}
+    {{ form.username }}
+    <br> <br>
+    {{ form.first_name.label }}
+    {{ form.first_name }}
+    <br> <br>
+    {{ form.last_name.label }}
+    {{ form.last_name }}
+    <br> <br>
+    {{ form.email.label }}
+    {{ form.email }}
+    <br> <br>
+    {{ form.password1.label }}
+    {{ form.password1 }}
+    <br> <br>
+    {{ form.password2.label }}
+    {{ form.password2 }}
+    <br> <br>
+    {{ form.errors }}
+    <br> <br>
     <input type="submit" name="Create User">
 </form>
