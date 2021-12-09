@@ -4,8 +4,11 @@
 `python manage.py runserver 0:8000`
 
 ## Upcoming Features:
-- [ ] User login page
-- [ ] User registration page
+- [X] User login page
+- [X] User registration page
+- [ ] Home page
+- [ ] Index page with project description
+- [ ] Personal User page
 
 ### TODO List:
 - [ ] Define DB structure
