@@ -14,10 +14,12 @@
         <br> <br>
         <p id="message">{{ message }}</p>
     {% endfor %}
-    <br>
-    <p>Remember me <input type="checkbox" name="remember_me"> </p>
-    <br>
-    <input type="submit" name="Login">
+    <br> <br>
+    <laber for="checkbox">
+        <input type="checkbox" name="remember_me"> Remember me
+    </laber>
+    <br> <br>
+    <input type="submit" name="Login" value="Login">
 </form>
 
 <h3>Don't have an account? <a href="{% url 'survey:register' %}">Sign Up</a></h3>

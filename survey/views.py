@@ -26,13 +26,14 @@ def loginView(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        remember_me = request.POST.get('remeber_me')
+        remember_me = request.POST.get('remember_me')
+        print(f"{remember_me}")
 
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-            if not remember_me:
+            if remember_me is None:
                 # if the remember me is False it will close the session after the browser is closed
                 request.session.set_expiry(0)
 
