@@ -26,11 +26,17 @@ def loginView(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        remember_me = request.POST.get('remeber_me')
 
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
+            if not remember_me:
+                # if the remember me is False it will close the session after the browser is closed
+                request.session.set_expiry(0)
+
+            # else browser session will be ad long as the sesison cookie time "SESSION_COOKIE_AGE"
             return redirect('survey:home')
         else:
             messages.info(request, 'Username or Password is incorrect')
