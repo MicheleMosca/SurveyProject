@@ -1,2 +1,2 @@
-<span>Hello, {{ request.user }}</span>
+<span>Hello, {{ request.user.first_name }}</span>
 <span><a href="{% url 'survey:logout' %}">Logout</a></span>
