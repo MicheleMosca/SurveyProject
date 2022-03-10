@@ -1,3 +1,6 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'survey/style.css' %}">
+
 <span>Hello, {{ request.user.first_name }}</span>
 <span><a href="{% url 'survey:logout' %}">Logout</a></span>
 
@@ -6,8 +9,8 @@
 {% for img in images %}
     <form method="POST" action="">
     {% csrf_token %}
-        Image path: <br>
-        {{ img.path }} <br><br>
+        <img src="{% static img.path %}" alt="{{ img.description }}">
+        <br><br>
         Answers: <br>
         {% for choice in choices %}
             <input type="radio" id="{{ choice.id }}" name="answer" value="{{ choice.id }}">

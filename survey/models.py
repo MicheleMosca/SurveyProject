@@ -16,6 +16,7 @@ class Survey(models.Model):
 
 class Image(models.Model):
     path = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, default='')
     transformation = models.CharField(max_length=200)
     survey_collection = models.ForeignKey(Survey_Collection, on_delete=models.CASCADE)
 

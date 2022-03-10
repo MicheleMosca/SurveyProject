@@ -1,3 +1,6 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'survey/style.css' %}">
+
 <span>Hello, {{ request.user.first_name }}</span>
 <span><a href="{% url 'survey:logout' %}">Logout</a></span>
 
@@ -5,7 +8,8 @@
 
 {% for img in survey_images %}
     Image path: <br>
-    {{ img.path }} <br><br>
+    <img src="{% static img.path %}" alt="{{ img.description }}">
+    <br><br>
     Selected Answers:
     {% for ans in user_answers %}
         {% if ans.image_id == img.id %}
