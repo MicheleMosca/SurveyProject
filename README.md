@@ -9,6 +9,8 @@
 - [ ] Home page
 - [ ] Index page with project description
 - [ ] Personal User page
+- [ ] Grid Image view
+- [ ] Jump to unvoted images
 
 ### TODO List:
 - [ ] Define DB structure

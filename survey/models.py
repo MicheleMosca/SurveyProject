@@ -36,3 +36,7 @@ class Answer(models.Model):
     comment = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    survey_collection = models.ForeignKey(Survey_Collection, on_delete=models.CASCADE, default=1)
+
+    class Meta:
+        unique_together = [['image', 'user', 'survey_collection']]

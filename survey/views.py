@@ -55,10 +55,14 @@ def logoutUser(request):
 @login_required(login_url='survey:login')
 def surveyView(request):
     if request.method == 'POST':
-        print(request.POST)
-        answer = Answer(user_id=request.user.id, image_id=request.POST.get('img'),
-                        choice_id=request.POST.get('answer'), comment=request.POST.get('comment'))
-        answer.save()
+        Answer.objects.update_or_create(
+            image_id=request.POST.get('img'),
+            user_id=request.user.id,
+            survey_collection_id=request.POST.get('survey_collection'),
+            defaults={
+                'comment': request.POST.get('comment'),
+                'choice_id': request.POST.get('answer')
+            })
 
     images = Image.objects.filter(survey_collection_id=request.GET.get('survey_collection_id'))
     choices = Choice.objects.filter(survey_collection_id=request.GET.get('survey_collection_id'))
