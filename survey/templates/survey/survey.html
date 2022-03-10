@@ -1,0 +1,24 @@
+<span>Hello, {{ request.user.first_name }}</span>
+<span><a href="{% url 'survey:logout' %}">Logout</a></span>
+
+<h1> Survey Images </h1>
+
+{% for img in images %}
+    <form method="POST" action="">
+    {% csrf_token %}
+        Image path: <br>
+        {{ img.path }} <br><br>
+        Answers: <br>
+        {% for choice in choices %}
+            <input type="radio" id="{{ choice.id }}" name="answer" value="{{ choice.id }}">
+            <label for="{{ choice.id }}">{{ choice.name }}</label>
+        {% endfor %}
+        <br><br> Comment (optional): <br>
+        <input type="text" name="comment">
+        <input type="hidden" name="img" value="{{ img.id }}">
+        <input type="submit" name="Send Answer" value="Send Answer">
+    </form>
+    <br><br><br>
+{% endfor %}
+
+<a href="{% url 'survey:home' %}">Home</a>

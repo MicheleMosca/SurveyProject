@@ -1,0 +1,18 @@
+<span>Hello, {{ request.user.first_name }}</span>
+<span><a href="{% url 'survey:logout' %}">Logout</a></span>
+
+<h1> Survey Images Results </h1>
+
+{% for img in survey_images %}
+    Image path: <br>
+    {{ img.path }} <br><br>
+    Selected Answers:
+    {% for ans in user_answers %}
+        {% if ans.image_id == img.id %}
+            {{ ans.choice }} <br> Optional Comment: {{ ans.comment }}
+        {% endif %}
+    {% endfor %}
+    <br><br><br>
+{% endfor %}
+
+<a href="{% url 'survey:home' %}">Home</a>

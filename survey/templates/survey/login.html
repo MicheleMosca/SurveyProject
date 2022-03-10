@@ -8,14 +8,18 @@
     </label>
     <br> <br>
     <label>
-        <input type="text" name="password" placeholder="Password...">
+        <input type="password" name="password" placeholder="Password...">
     </label>
     {% for message in messages %}
         <br> <br>
         <p id="message">{{ message }}</p>
     {% endfor %}
     <br> <br>
-    <input type="submit" name="Login">
+    <laber for="checkbox">
+        <input type="checkbox" name="remember_me"> Remember me
+    </laber>
+    <br> <br>
+    <input type="submit" name="Login" value="Login">
 </form>
 
 <h3>Don't have an account? <a href="{% url 'survey:register' %}">Sign Up</a></h3>
