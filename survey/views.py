@@ -90,8 +90,17 @@ def homeView(request):
 def resultView(request):
     user_answers = Answer.objects.filter(user_id=request.user.id)
     survey_images = Image.objects.filter(survey_collection_id=request.GET.get('survey_collection_id'))
+
+    images_dict = dict()
+    for img in survey_images:
+        images_dict[img] = None
+        for ans in user_answers:
+            if ans.image_id == img.id:
+                images_dict[img] = ans
+
     context = {
         'user_answers': user_answers,
         'survey_images': survey_images,
+        'images_dict': images_dict,
     }
     return render(request, 'survey/result.html', context)
