@@ -1,28 +1,33 @@
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'survey/style.css' %}">
+{% include 'survey/navbar.html' %}
 
-<span>Hello, {{ request.user.first_name }}</span>
-<span><a href="{% url 'survey:logout' %}">Logout</a></span>
+<h1 class="text-center"> {{ image.description }} </h1>
 
-<h1> Survey Images </h1>
-
-{% for img in images %}
-    <form method="POST" action="">
+<form method="POST" action="">
     {% csrf_token %}
-        <img src="{% static img.path %}" alt="{{ img.description }}">
-        <br><br>
-        Answers: <br>
+    <div class="container">
+        <div class="text-center">
+            <img src="{% static image.path %}" alt="{{ image.description }}" class="img-thumbnail">
+        </div>
+        <br>
+        <h3 class="text-start">Choose an answer:</h3>
         {% for choice in choices %}
-            <input type="radio" id="{{ choice.id }}" name="answer" value="{{ choice.id }}">
-            <label for="{{ choice.id }}">{{ choice.name }}</label>
+            <div class="form-check">
+                <input class="from-check-input" type="radio" id="{{ choice.id }}" name="answer" value="{{ choice.id }}"
+                        {% if selected_choice and choice.id == selected_choice.choice_id %}
+                            checked
+                        {% endif %} >
+                <label class="form-check-label" for="{{ choice.id }}">{{ choice.name }}</label>
+            </div>
         {% endfor %}
-        <br><br> Comment (optional): <br>
-        <input type="text" name="comment">
-        <input type="hidden" name="img" value="{{ img.id }}">
-        <input type="hidden" name="survey_collection" value="{{ img.survey_collection_id }}">
-        <input type="submit" name="Send Answer" value="Send Answer">
-    </form>
-    <br><br><br>
-{% endfor %}
-
-<a href="{% url 'survey:home' %}">Home</a>
+        <br><br>
+        <h4 class="text-start">Comment (optional):</h4>
+        <br>
+        <textarea rows="5" cols="70" name="comment" >{% if comment %} {{ comment }} {% endif %}</textarea>
+        <input type="hidden" name="img" value="{{ image.id }}">
+        <input type="hidden" name="survey_collection" value="{{ image.survey_collection_id }}">
+        <br><br>
+        <input class="btn btn-primary" type="submit" name="Send Answer" value="Send Answer">
+        <a class="btn btn-primary" href="{% url 'survey:result' %}?survey_collection_id={{ image.survey_collection_id }}" >Go back</a>
+    </div>
+</form>

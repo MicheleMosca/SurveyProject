@@ -64,22 +64,35 @@ def surveyView(request):
                 'choice_id': request.POST.get('answer')
             })
 
-    images = Image.objects.filter(survey_collection_id=request.GET.get('survey_collection_id'))
-    choices = Choice.objects.filter(survey_collection_id=request.GET.get('survey_collection_id'))
+    img_id = request.GET.get('img')
+    survey_collection_id = request.GET.get('survey_collection')
+    user_id = request.user.id
+
+    image = Image.objects.filter(id=img_id).first()
+    choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
+    selected_choice = Answer.objects.filter(image_id=img_id,
+                                            survey_collection_id=survey_collection_id,
+                                            user_id=user_id).first()
+    comment = None
+    if selected_choice is not None:
+        comment = selected_choice.comment
+
     context = {
-        'images': images,
+        'image': image,
         'choices': choices,
+        'selected_choice': selected_choice,
+        'comment': comment,
     }
     return render(request, 'survey/survey.html', context)
 
 
 @login_required(login_url='survey:login')
 def homeView(request):
-    survey_list = []
     try:
         survey_list = [Survey.objects.get(user_id=request.user.id)]
     except (KeyError, Survey.DoesNotExist):
         survey_list = []
+
     context = {
         'survey_list': survey_list,
     }
