@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Image, Survey_Collection, Survey
 
-# Register your models here.
+admin.site.register(Image)
+admin.site.register(Survey_Collection)
+admin.site.register(Survey)
