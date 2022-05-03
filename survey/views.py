@@ -100,9 +100,11 @@ def homeView(request):
     return render(request, 'survey/home.html', context)
 
 
+@login_required(login_url='survey:login')
 def resultView(request):
+    survey_collection_id = request.GET.get('survey_collection_id')
     user_answers = Answer.objects.filter(user_id=request.user.id)
-    survey_images = Image.objects.filter(survey_collection_id=request.GET.get('survey_collection_id'))
+    survey_images = Image.objects.filter(survey_collection_id=survey_collection_id)
 
     images_dict = dict()
     for img in survey_images:
@@ -111,9 +113,24 @@ def resultView(request):
             if ans.image_id == img.id:
                 images_dict[img] = ans
 
+    show_only_unanswer = False
+    if request.POST.get('show_only_unanswer') == 'on':
+        show_only_unanswer = True
+
+    img_list = list()
+    if show_only_unanswer:
+        for img, ans in images_dict.items():
+            if ans is not None:
+                img_list.append(img)
+
+        for img in img_list:
+            images_dict.pop(img)
+
     context = {
         'user_answers': user_answers,
         'survey_images': survey_images,
         'images_dict': images_dict,
+        'show_only_unanswer': show_only_unanswer,
+        'survey_collection_id': survey_collection_id,
     }
     return render(request, 'survey/result.html', context)

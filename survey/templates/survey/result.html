@@ -7,6 +7,15 @@
 <body>
     {% include 'survey/navbar.html' %}
     <h1 class="text-center"> Survey Images Results </h1>
+
+    <div>
+        <form method="post" action="{% url 'survey:result' %}?survey_collection_id={{ survey_collection_id }}">
+            {% csrf_token %}
+            <label>Show Only UnAnswer Images</label>
+            <input type="checkbox" name="show_only_unanswer" onchange="this.form.submit()" {% if show_only_unanswer == True %} checked {% endif %}>
+        </form>
+    </div>
+
     <div class="container">
         <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
         {% for img, ans in images_dict.items %}
