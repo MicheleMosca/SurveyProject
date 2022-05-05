@@ -11,8 +11,8 @@
     <div>
         <form method="post" action="{% url 'survey:result' %}?survey_collection_id={{ survey_collection_id }}">
             {% csrf_token %}
-            <label>Show Only UnAnswer Images</label>
-            <input type="checkbox" name="show_only_unanswer" onchange="this.form.submit()" {% if show_only_unanswer == True %} checked {% endif %}>
+            <label>Show Only Unvoted Images</label>
+            <input type="checkbox" name="show_only_unvoted" onchange="this.form.submit()" {% if show_only_unvoted == True %} checked {% endif %}>
         </form>
     </div>
 
@@ -22,11 +22,20 @@
             <div class="col">
                 {% if ans.choice == None %}
                     <div class="card border-danger mb-3" style="width: 18rem;">
-                        <img src="{% static img.path %}" class="card-img-top" alt="{{ img.description }}">
+                        <a href="{% url 'survey:survey' %}?img={{ img.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% static img.path %}" class="card-img-top" alt="{{ img.description }}"></a>
                         <div class="card-body text-danger">
                             <h5 class="card-title">{{ img.description }}</h5>
-                            <p class="card-text">No Answer</p>
-                            <form method="GET" action="{% url 'survey:survey' %}">
+                            <!-- <p class="card-text">No Answer</p> -->
+                            <p class="card-text">Choices:</p>
+                            <form method="post" action="">
+                                {% csrf_token %}
+                                {% for choice in choices %}
+                                    <div class="form-check">
+                                        <input class="from-check-input" type="radio" id="{{ img.id }}.{{ choice.id }}" name="answer" value="{{ choice.id }}">
+                                        <label class="form-check-label" for="{{ img.id }}.{{ choice.id }}">{{ choice.name }}</label>
+                                    </div>
+                                {% endfor %}
+                                <br>
                                 <input type="hidden" name="img" value="{{ img.id }}">
                                 <input type="hidden" name="survey_collection" value="{{ img.survey_collection.id }}">
                                 <input type="submit" class="btn btn-primary" value="Make Answer">
@@ -35,11 +44,23 @@
                     </div>
                 {% else %}
                     <div class="card border-success mb-3" style="width: 18rem;">
-                        <img src="{% static img.path %}" class="card-img-top" alt="{{ img.description }}">
+                        <a href="{% url 'survey:survey' %}?img={{ img.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% static img.path %}" class="card-img-top" alt="{{ img.description }}"></a>
                         <div class="card-body">
                             <h5 class="card-title text-success">{{ img.description }}</h5>
-                            <p class="card-text">Answers: {{ ans.choice }}</p>
-                            <form method="GET" action="{% url 'survey:survey' %}">
+                            <!-- <p class="card-text">Answers: {{ ans.choice }}</p> -->
+                            <p class="card-text">Choices:</p>
+                            <form method="post" action="">
+                                {% csrf_token %}
+                                {% for choice in choices %}
+                                    <div class="form-check">
+                                        <input class="from-check-input" type="radio" id="{{ img.id }}.{{ choice.id }}" name="answer" value="{{ choice.id }}"
+                                                {% if ans.choice.name == choice.name %}
+                                                    checked
+                                                {% endif %} >
+                                        <label class="form-check-label" for="{{ img.id }}.{{ choice.id }}">{{ choice.name }}</label>
+                                    </div>
+                                {% endfor %}
+                                <br>
                                 <input type="hidden" name="img" value="{{ img.id }}">
                                 <input type="hidden" name="survey_collection" value="{{ img.survey_collection.id }}">
                                 <input type="submit" class="btn btn-primary" value="Change Answer">

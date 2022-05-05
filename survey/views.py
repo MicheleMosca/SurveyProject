@@ -29,7 +29,6 @@ def loginView(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         remember_me = request.POST.get('remember_me')
-        print(f"{remember_me}")
 
         user = authenticate(request, username=username, password=password)
 
@@ -54,6 +53,7 @@ def logoutUser(request):
 
 @login_required(login_url='survey:login')
 def surveyView(request):
+    # Write changes on the db
     if request.method == 'POST':
         Answer.objects.update_or_create(
             image_id=request.POST.get('img'),
@@ -102,8 +102,21 @@ def homeView(request):
 
 @login_required(login_url='survey:login')
 def resultView(request):
+    # Write changes on the db
+    if request.method == 'POST':
+        if request.POST.get('img') is not None:
+            Answer.objects.update_or_create(
+                image_id=request.POST.get('img'),
+                user_id=request.user.id,
+                survey_collection_id=request.POST.get('survey_collection'),
+                defaults={
+                    # 'comment': request.POST.get('comment'), Insert if default comment is needed
+                    'choice_id': request.POST.get('answer')
+                })
+
+    user_id = request.user.id
     survey_collection_id = request.GET.get('survey_collection_id')
-    user_answers = Answer.objects.filter(user_id=request.user.id)
+    user_answers = Answer.objects.filter(user_id=user_id)
     survey_images = Image.objects.filter(survey_collection_id=survey_collection_id)
 
     images_dict = dict()
@@ -113,12 +126,14 @@ def resultView(request):
             if ans.image_id == img.id:
                 images_dict[img] = ans
 
-    show_only_unanswer = False
-    if request.POST.get('show_only_unanswer') == 'on':
-        show_only_unanswer = True
+    # Check if unvoted checkbox is selected
+    show_only_unvoted = False
+    if request.POST.get('show_only_unvoted') == 'on':
+        show_only_unvoted = True
 
+    # Remove all voted images from the dict
     img_list = list()
-    if show_only_unanswer:
+    if show_only_unvoted:
         for img, ans in images_dict.items():
             if ans is not None:
                 img_list.append(img)
@@ -126,11 +141,14 @@ def resultView(request):
         for img in img_list:
             images_dict.pop(img)
 
+    choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
+
     context = {
         'user_answers': user_answers,
         'survey_images': survey_images,
         'images_dict': images_dict,
-        'show_only_unanswer': show_only_unanswer,
+        'show_only_unvoted': show_only_unvoted,
         'survey_collection_id': survey_collection_id,
+        'choices': choices,
     }
     return render(request, 'survey/result.html', context)
