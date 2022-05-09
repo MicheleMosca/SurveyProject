@@ -26,7 +26,7 @@
 This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2GqZGYSDZ8)
 
 ### YAML Image Collection File Example:
-`# Definition of a new image collection
+` # Definition of a new image collection
 collection:
     id: 1                                               # Insert id if you want to add something to an existing collection
     description: "Description of the collection"
