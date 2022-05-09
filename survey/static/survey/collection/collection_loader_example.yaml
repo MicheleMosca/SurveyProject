@@ -10,14 +10,3 @@ collection:
             name: "image2"
         -   path: "survey/images/image3.jpg"
             name: "image3"
-
-#---
-#
-## Definition of a second image collection
-#collection:
-#    description: "Description of the collection"
-#
-#    images:
-#        -   path: "survey/images/image1.jpg"
-#        -   path: "survey/images/image2.jpg"
-#            name: "image2"

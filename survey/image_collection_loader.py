@@ -1,5 +1,17 @@
+from survey.models import Image
+from os import walk
 import sys
 import yaml
+
+
+def load_image(path):
+    # path = 'static/survey/images/'
+    _, _, filenames = next(walk(f'survey/{path}'))
+
+    for f in filenames:
+        image = Image(path=f'{path}{f}')
+        print(f"{image.path}")
+
 
 if __name__ == '__main__':
     print("Image Collection Loader\n")
