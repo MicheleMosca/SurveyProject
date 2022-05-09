@@ -6,7 +6,7 @@ class Survey_Collection(models.Model):
     description = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.description
+        return self.id
 
 
 class Survey(models.Model):
@@ -16,12 +16,19 @@ class Survey(models.Model):
 
 class Image(models.Model):
     path = models.CharField(max_length=200)
-    description = models.CharField(max_length=200, default='')
-    transformation = models.CharField(max_length=200)
-    survey_collection = models.ForeignKey(Survey_Collection, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, default='')
 
     def __str__(self):
         return self.path
+
+    class Meta:
+        unique_together = [['name', 'path']]
+
+
+class Image_Collection(models.Model):
+    transformation = models.CharField(max_length=200)
+    survey_collection = models.ForeignKey(Survey_Collection, on_delete=models.CASCADE)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
 
 
 class Choice(models.Model):
@@ -33,11 +40,10 @@ class Choice(models.Model):
 
 
 class Answer(models.Model):
-    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    image_collection = models.ForeignKey(Image_Collection, on_delete=models.CASCADE)
     comment = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
-    survey_collection = models.ForeignKey(Survey_Collection, on_delete=models.CASCADE, default=1)
 
     class Meta:
-        unique_together = [['image', 'user', 'survey_collection']]
+        unique_together = [['image_collection', 'user']]

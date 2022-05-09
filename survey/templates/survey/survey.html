@@ -1,13 +1,13 @@
 {% load static %}
 {% include 'survey/navbar.html' %}
 
-<h1 class="text-center"> {{ image.description }} </h1>
+<h1 class="text-center"> {{ image.image.name }} </h1>
 
 <form method="POST" action="">
     {% csrf_token %}
     <div class="container">
         <div class="text-center">
-            <img src="{% static image.path %}" alt="{{ image.description }}" class="img-thumbnail">
+            <img src="{% static image.image.path %}" alt="{{ image.image.name }}" class="img-thumbnail">
         </div>
         <br>
         <h3 class="text-start">Choose an answer:</h3>

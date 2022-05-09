@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .models import Survey, Image, Answer, Choice
+from .models import Survey, Image_Collection, Answer, Choice
 
 
 def indexView(request):
@@ -56,9 +56,8 @@ def surveyView(request):
     # Write changes on the db
     if request.method == 'POST':
         Answer.objects.update_or_create(
-            image_id=request.POST.get('img'),
+            image_collection_id=request.POST.get('img'),
             user_id=request.user.id,
-            survey_collection_id=request.POST.get('survey_collection'),
             defaults={
                 'comment': request.POST.get('comment'),
                 'choice_id': request.POST.get('answer')
@@ -68,10 +67,9 @@ def surveyView(request):
     survey_collection_id = request.GET.get('survey_collection')
     user_id = request.user.id
 
-    image = Image.objects.filter(id=img_id).first()
+    image = Image_Collection.objects.filter(image_id=img_id).first()
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
-    selected_choice = Answer.objects.filter(image_id=img_id,
-                                            survey_collection_id=survey_collection_id,
+    selected_choice = Answer.objects.filter(image_collection_id=img_id,
                                             user_id=user_id).first()
     comment = None
     if selected_choice is not None:
@@ -106,9 +104,8 @@ def resultView(request):
     if request.method == 'POST':
         if request.POST.get('img') is not None:
             Answer.objects.update_or_create(
-                image_id=request.POST.get('img'),
+                image_collection_id=request.POST.get('img'),
                 user_id=request.user.id,
-                survey_collection_id=request.POST.get('survey_collection'),
                 defaults={
                     # 'comment': request.POST.get('comment'), Insert if default comment is needed
                     'choice_id': request.POST.get('answer')
@@ -117,13 +114,13 @@ def resultView(request):
     user_id = request.user.id
     survey_collection_id = request.GET.get('survey_collection_id')
     user_answers = Answer.objects.filter(user_id=user_id)
-    survey_images = Image.objects.filter(survey_collection_id=survey_collection_id)
+    survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
 
     images_dict = dict()
     for img in survey_images:
         images_dict[img] = None
         for ans in user_answers:
-            if ans.image_id == img.id:
+            if ans.image_collection_id == img.id:
                 images_dict[img] = ans
 
     # Check if unvoted checkbox is selected
@@ -151,4 +148,4 @@ def resultView(request):
         'survey_collection_id': survey_collection_id,
         'choices': choices,
     }
-    return render(request, 'survey/result.html', context)
+    return render(request, 'survey/collection.html', context)
