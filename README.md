@@ -16,6 +16,7 @@
 - [X] Define DB structure
 - [X] Write a grid view
 - [X] Create a checkbox to visualize only unvoted images
+- [ ] Apply Image transformations
 - [ ] Create an upload image script with yaml language
 - [ ] Use ajax for the management of the forms on the website
 - [ ] Insert a next and previews button near the zoomed image
