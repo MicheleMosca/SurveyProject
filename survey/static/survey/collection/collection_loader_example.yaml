@@ -1,6 +1,6 @@
 # Definition of a new image collection
 collection:
-    id: 1                                               # Insert id if you want to add something to an existing collection
+    #id: 1                                               # Insert id if you want to add something to an existing collection
     description: "Description of the collection"
 
     images:
