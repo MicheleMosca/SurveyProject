@@ -87,7 +87,7 @@ def surveyView(request):
 @login_required(login_url='survey:login')
 def homeView(request):
     try:
-        survey_list = [Survey.objects.get(user_id=request.user.id)]
+        survey_list = Survey.objects.filter(user_id=request.user.id)
     except (KeyError, Survey.DoesNotExist):
         survey_list = []
 

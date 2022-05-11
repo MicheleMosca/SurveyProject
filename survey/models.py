@@ -30,6 +30,9 @@ class Image_Collection(models.Model):
     survey_collection = models.ForeignKey(Survey_Collection, on_delete=models.CASCADE)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = [['image', 'survey_collection']]
+
 
 class Choice(models.Model):
     name = models.CharField(max_length=200)

@@ -36,7 +36,14 @@ collection:
         -   path: "survey/images/image1.jpg"
             name: "image1"                              # name can be omitted, default is the filename without extension
         -   path: "survey/images/image2.jpg"
-            name: "image2"
+            transformation: 'flip'
         -   path: "survey/images/image3.jpg"
-            name: "image3"
+
+    choices:                                            # List new choices for the current image collection
+        -   name: "Collection1_Option1"
+        -   name: "Collection1_Option2"
+        -   name: "Collection1_Option3"
+        -   name: "Collection1_Option4"
+
+    users: ['prova1', 'prova2']                         # list new users who will get the access to the collection
 ```
