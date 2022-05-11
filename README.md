@@ -16,11 +16,13 @@
 - [X] Define DB structure
 - [X] Write a grid view
 - [X] Create a checkbox to visualize only unvoted images
-- [ ] Apply Image transformations
+- [ ] Create a new view to serve server with the image in base64
+- [ ] Apply Image transformations with pillow and offuscate path in base64
 - [ ] Create an upload image script with yaml language
 - [ ] Use ajax for the management of the forms on the website
 - [ ] Insert a next and previews button near the zoomed image
 - [ ] Insert the checkbox to visualize only unvoted images in the zoomed image view
+- [ ] sostituire i try/catch con i get
 
 ### Database Scheme:
 This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2GqZGYSDZ8)

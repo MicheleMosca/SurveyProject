@@ -5,15 +5,8 @@ import yaml
 def image_loader(images, collection_object):
     for img in images:
         path = img['path']
-        try:
-            name = img['name']
-        except KeyError:
-            name = (path.split('/')[-1]).split('.')[0]
-
-        try:
-            transformation = img['transformation']
-        except KeyError:
-            transformation = ''
+        name = img.get('name', (path.split('/')[-1]).split('.')[0])
+        transformation = img.get('transformation', '')
 
         image_object = Image.objects.get_or_create(
             path=path,
@@ -41,13 +34,14 @@ def add_users(users, collection_object):
 def add_choices(choices, collection_object):
     print(f"Choices: {choices}")
     for choice in choices:
-        try:
-            choice_object = Choice.objects.get_or_create(name=choice['name'], survey_collection_id=collection_object.id)
-            print(f"Choice id: {choice_object[0].id} Choice name: {choice_object[0].name} "
-                  f"Collection id: {choice_object[0].survey_collection_id} added!")
-        except KeyError:
-            print("Errore: Choices need a name!")
+        name = choice.get('name')
+        if name is None:
+            print("Error: Choices need a name!")
             exit(4)
+
+        choice_object = Choice.objects.get_or_create(name=choice['name'], survey_collection_id=collection_object.id)
+        print(f"Choice id: {choice_object[0].id} Choice name: {choice_object[0].name} "
+              f"Collection id: {choice_object[0].survey_collection_id} added!")
 
 
 def run(*args):
@@ -60,61 +54,42 @@ def run(*args):
     data = yaml.load(file, Loader=yaml.FullLoader)
     print(data)
 
-    try:
-        collection = data['collection']
-        if collection is None:
-            print("Error: The collection is empty!")
-            exit(5)
-
-        try:
-            collection_id = collection['id']
-        except KeyError:
-            collection_id = None
-
-        try:
-            description = collection['description']
-        except KeyError:
-            description = ''
-
-        try:
-            choices = collection['choices']
-        except KeyError:
-            choices = None
-            if collection_id is None:
-                print("Errore: The new collection doesn't have any choices for the answer!")
-                exit(2)
-
-        if collection_id is not None:
-            print(f"Aggiungo le seguenti immagini alla collection {collection_id}")
-            collection_object = Survey_Collection.objects.get(id=collection_id)
-            print(f"Collecion id: {collection_object.id} Collection description: {collection_object.description}")
-
-            if description != '':
-                collection_object.description = description
-                collection_object.save()
-                print(f"New description: {collection_object.description}")
-
-        else:
-            print("Creo una nuova collection")
-            collection_object = Survey_Collection(description=description)
-            collection_object.save()
-            print(f"Collection id: {collection_object.id}")
-
-        if choices is not None:
-            add_choices(choices, collection_object)
-
-        try:
-            images = collection['images']
-            image_loader(images, collection_object)
-        except KeyError:
-            pass
-
-        try:
-            users = collection['users']
-            add_users(users, collection_object)
-        except KeyError:
-            pass
-
-    except KeyError:
-        print("Error: No collection found!")
+    collection = data.get('collection')
+    if collection is None:
+        print("Error: The collection is empty!")
         exit(3)
+
+    collection_id = collection.get('id')
+    description = collection.get('description', '')
+    choices = collection.get('choices')
+
+    if collection_id is None:
+        print("Errore: The new collection doesn't have any choices for the answer!")
+        exit(2)
+
+    if collection_id is not None:
+        print(f"Modifico la collection {collection_id}")
+        collection_object = Survey_Collection.objects.get(id=collection_id)
+        print(f"Collecion id: {collection_object.id} Collection description: {collection_object.description}")
+
+        if description != '':
+            collection_object.description = description
+            collection_object.save()
+            print(f"New description: {collection_object.description}")
+
+    else:
+        print("Creo una nuova collection")
+        collection_object = Survey_Collection(description=description)
+        collection_object.save()
+        print(f"Collection id: {collection_object.id}")
+
+    if choices is not None:
+        add_choices(choices, collection_object)
+
+    images = collection.get('images')
+    if images is not None:
+        image_loader(images, collection_object)
+
+    users = collection.get('users')
+    if users is not None:
+        add_users(users, collection_object)
