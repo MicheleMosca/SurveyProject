@@ -63,7 +63,7 @@ def run(*args):
     description = collection.get('description', '')
     choices = collection.get('choices')
 
-    if collection_id is None:
+    if choices is None:
         print("Errore: The new collection doesn't have any choices for the answer!")
         exit(2)
 
