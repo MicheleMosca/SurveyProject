@@ -6,10 +6,11 @@
 </head>
 <body>
     {% include 'survey/navbar.html' %}
+    {% load survey_extras %}
     <h1 class="text-center"> Survey Images Collection {{ survey_collection_id }} </h1>
 
     <div>
-        <form method="post" action="{% url 'survey:result' %}?survey_collection_id={{ survey_collection_id }}">
+        <form method="post" action="{% url 'survey:collection' %}?survey_collection_id={{ survey_collection_id }}">
             {% csrf_token %}
             <label>Show Only Unvoted Images</label>
             <input type="checkbox" name="show_only_unvoted" onchange="this.form.submit()" {% if show_only_unvoted == True %} checked {% endif %}>
@@ -22,7 +23,7 @@
             <div class="col">
                 {% if ans.choice == None %}
                     <div class="card border-danger mb-3" style="width: 18rem;">
-                        <a href="{% url 'survey:survey' %}?img={{ img.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
+                        <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% encode_static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
                         <div class="card-body text-danger">
                             <h5 class="card-title">{{ img.image.name }}</h5>
                             <!-- <p class="card-text">No Answer</p> -->
@@ -44,7 +45,7 @@
                     </div>
                 {% else %}
                     <div class="card border-success mb-3" style="width: 18rem;">
-                        <a href="{% url 'survey:survey' %}?img={{ img.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
+                        <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% encode_static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
                         <div class="card-body">
                             <h5 class="card-title text-success">{{ img.image.name }}</h5>
                             <!-- <p class="card-text">Answers: {{ ans.choice }}</p> -->

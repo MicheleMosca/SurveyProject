@@ -11,5 +11,5 @@ urlpatterns = [
     path('home/', views.homeView, name='home'),
     path('logout/', views.logoutUser, name='logout'),
     path('survey/', views.surveyView, name='survey'),
-    path('collection/', views.resultView, name='result'),
+    path('collection/', views.collectionView, name='collection'),
 ]

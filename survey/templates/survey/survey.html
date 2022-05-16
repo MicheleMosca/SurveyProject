@@ -1,4 +1,4 @@
-{% load static %}
+{% load survey_extras %}
 {% include 'survey/navbar.html' %}
 
 <h1 class="text-center"> {{ image.image.name }} </h1>
@@ -7,7 +7,7 @@
     {% csrf_token %}
     <div class="container">
         <div class="text-center">
-            <img src="{% static image.image.path %}" alt="{{ image.image.name }}" class="img-thumbnail">
+            <img src="{% encode_static image.image.path %}" alt="{{ image.image.name }}" class="img-thumbnail">
         </div>
         <br>
         <h3 class="text-start">Choose an answer:</h3>
@@ -28,6 +28,6 @@
         <input type="hidden" name="survey_collection" value="{{ image.survey_collection_id }}">
         <br><br>
         <input class="btn btn-primary" type="submit" name="Send Answer" value="Send Answer">
-        <a class="btn btn-primary" href="{% url 'survey:result' %}?survey_collection_id={{ image.survey_collection_id }}" >Go back</a>
+        <a class="btn btn-primary" href="{% url 'survey:collection' %}?survey_collection_id={{ image.survey_collection_id }}" >Go back</a>
     </div>
 </form>

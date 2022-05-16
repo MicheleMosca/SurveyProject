@@ -67,7 +67,7 @@ def surveyView(request):
     survey_collection_id = request.GET.get('survey_collection')
     user_id = request.user.id
 
-    image = Image_Collection.objects.filter(image_id=img_id).first()
+    image = Image_Collection.objects.filter(image_id=img_id, survey_collection_id=survey_collection_id).first()
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
     selected_choice = Answer.objects.filter(image_collection_id=img_id,
                                             user_id=user_id).first()
@@ -99,7 +99,7 @@ def homeView(request):
 
 
 @login_required(login_url='survey:login')
-def resultView(request):
+def collectionView(request):
     # Write changes on the db
     if request.method == 'POST':
         if request.POST.get('img') is not None:
@@ -149,3 +149,4 @@ def resultView(request):
         'choices': choices,
     }
     return render(request, 'survey/collection.html', context)
+
