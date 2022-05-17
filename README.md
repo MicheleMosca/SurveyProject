@@ -22,6 +22,8 @@
 - [ ] Use ajax for the management of the forms on the website
 - [ ] Insert a next and previews button near the zoomed image
 - [ ] Insert the checkbox to visualize only unvoted images in the zoomed image view
+- [ ] Il submit della risposta nella pagina survey.html visualizza la risposta del survey precedente e non submitta una nuova
+- [ ] Sistemare il codice ajax su tutti i form della pagina, al momento submitta solo il primo form (forse perchè hanno lo stesso id?)
 
 ### Database Scheme:
 This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2GqZGYSDZ8)

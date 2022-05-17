@@ -22,4 +22,4 @@ def encode_static(path, encoding='base64', file_type='image'):
         file_str = base64.b64encode(f.read()).decode('utf-8')
         f.close()
 
-    return u"data:{0}/{1};{2},{3}".format(file_type, ext, encoding, file_str)
+    return f"data:{file_type}/{ext};{encoding},{file_str}"

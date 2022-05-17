@@ -7,6 +7,8 @@
 <body>
     {% include 'survey/navbar.html' %}
     {% load survey_extras %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script rel="javascript" type="text/javascript" src="{% static 'survey/js/collection.js' %}"></script>
     <h1 class="text-center"> Survey Images Collection {{ survey_collection_id }} </h1>
 
     <div>
@@ -16,6 +18,8 @@
             <input type="checkbox" name="show_only_unvoted" onchange="this.form.submit()" {% if show_only_unvoted == True %} checked {% endif %}>
         </form>
     </div>
+
+    <div id="alert-box"></div>
 
     <div class="container">
         <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
@@ -28,7 +32,7 @@
                             <h5 class="card-title">{{ img.image.name }}</h5>
                             <!-- <p class="card-text">No Answer</p> -->
                             <p class="card-text">Choices:</p>
-                            <form method="post" action="">
+                            <form method="post" action="" id="post-form">
                                 {% csrf_token %}
                                 {% for choice in choices %}
                                     <div class="form-check">
@@ -50,7 +54,7 @@
                             <h5 class="card-title text-success">{{ img.image.name }}</h5>
                             <!-- <p class="card-text">Answers: {{ ans.choice }}</p> -->
                             <p class="card-text">Choices:</p>
-                            <form method="post" action="">
+                            <form method="post" action="" id="post-form">
                                 {% csrf_token %}
                                 {% for choice in choices %}
                                     <div class="form-check">
@@ -73,6 +77,5 @@
         {% endfor %}
         </div>
     </div>
-
 </body>
 </html>
