@@ -5,12 +5,11 @@ const handleAlerts = (type, text) =>{
 
 $(document).ready(function (){
     // Submit post on submit
-    $('#post-form').on('submit', function (event){
+    $('.post-form').on('submit', function (event){
 
         event.preventDefault();
 
         const form = $(this);
-        console.log(form.serialize());
         $.ajax({
             type: "POST",
             url: "",

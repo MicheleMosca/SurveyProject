@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib import messages
@@ -69,7 +70,7 @@ def surveyView(request):
 
     image = Image_Collection.objects.filter(image_id=img_id, survey_collection_id=survey_collection_id).first()
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
-    selected_choice = Answer.objects.filter(image_collection_id=img_id,
+    selected_choice = Answer.objects.filter(image_collection_id=image.id,
                                             user_id=user_id).first()
     comment = None
     if selected_choice is not None:
@@ -110,6 +111,11 @@ def collectionView(request):
                     # 'comment': request.POST.get('comment'), Insert if default comment is needed
                     'choice_id': request.POST.get('answer')
                 })
+        if request.is_ajax():
+            response = {
+                'msg': 'Form submitted succesfully!'
+            }
+            return JsonResponse(response)
 
     user_id = request.user.id
     survey_collection_id = request.GET.get('survey_collection_id')

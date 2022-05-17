@@ -32,7 +32,7 @@
                             <h5 class="card-title">{{ img.image.name }}</h5>
                             <!-- <p class="card-text">No Answer</p> -->
                             <p class="card-text">Choices:</p>
-                            <form method="post" action="" id="post-form">
+                            <form method="post" action="" class="post-form">
                                 {% csrf_token %}
                                 {% for choice in choices %}
                                     <div class="form-check">
@@ -54,7 +54,7 @@
                             <h5 class="card-title text-success">{{ img.image.name }}</h5>
                             <!-- <p class="card-text">Answers: {{ ans.choice }}</p> -->
                             <p class="card-text">Choices:</p>
-                            <form method="post" action="" id="post-form">
+                            <form method="post" action="" class="post-form">
                                 {% csrf_token %}
                                 {% for choice in choices %}
                                     <div class="form-check">
