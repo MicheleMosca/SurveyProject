@@ -1,8 +1,3 @@
-const handleAlerts = (type, text) =>{
-    const alertBox = document.getElementById('alert-box');
-    alertBox.innerHTML = `<div class="alert alert-${type}" role="alert"> ${text} </div>`
-}
-
 $(document).ready(function (){
     // Submit post on submit
     $('.post-form').on('submit', function (event){
@@ -16,11 +11,25 @@ $(document).ready(function (){
             data: form.serialize(),
 
             success: function (response){
-                handleAlerts('success', 'Answer submitted!')
+                // handleAlerts('success', 'Answer submitted!')
+                Swal.fire({
+                  position: 'top',
+                  icon: 'success',
+                  title: 'Answer Submitted!',
+                  showConfirmButton: false,
+                  timer: 1250
+                })
             },
 
             failure: function (error){
-                handleAlerts('danger', 'Error!');
+                // handleAlerts('danger', 'Error!');
+                Swal.fire({
+                  position: 'top',
+                  icon: 'error',
+                  title: 'Error!',
+                  showConfirmButton: false,
+                  timer: 1250
+                })
             }
         })
     });
