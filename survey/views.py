@@ -63,6 +63,11 @@ def surveyView(request):
                 'comment': request.POST.get('comment'),
                 'choice_id': request.POST.get('answer')
             })
+        if request.is_ajax():
+            response = {
+                'msg': 'Form submitted succesfully!'
+            }
+            return JsonResponse(response)
 
     img_id = request.GET.get('img')
     survey_collection_id = request.GET.get('survey_collection')

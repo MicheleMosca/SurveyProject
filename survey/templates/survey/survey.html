@@ -1,9 +1,14 @@
 {% load survey_extras %}
 {% include 'survey/navbar.html' %}
+{% load static %}
 
 <h1 class="text-center"> {{ image.image.name }} </h1>
 
-<form method="POST" action="">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script rel="javascript" type="text/javascript" src="{% static 'survey/js/survey.js' %}"></script>
+
+<form method="post" action="" class="post-form">
     {% csrf_token %}
     <div class="container">
         <div class="text-center">
