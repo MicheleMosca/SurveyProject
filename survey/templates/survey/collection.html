@@ -27,52 +27,53 @@
         {% for img, ans in images_dict.items %}
             <div class="col">
                 {% if ans.choice == None %}
-                    <div class="card border-danger mb-3" style="width: 18rem;">
-                        <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% encode_static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
-                        <div class="card-body text-danger">
-                            <h5 class="card-title">{{ img.image.name }}</h5>
-                            <!-- <p class="card-text">No Answer</p> -->
-                            <p class="card-text">Choices:</p>
-                            <form method="post" action="" class="post-form">
-                                {% csrf_token %}
-                                {% for choice in choices %}
-                                    <div class="form-check">
-                                        <input class="from-check-input" type="radio" id="{{ img.id }}.{{ choice.id }}" name="answer" value="{{ choice.id }}">
-                                        <label class="form-check-label" for="{{ img.id }}.{{ choice.id }}">{{ choice.name }}</label>
-                                    </div>
-                                {% endfor %}
-                                <br>
-                                <input type="hidden" name="img" value="{{ img.id }}">
-                                <input type="hidden" name="survey_collection" value="{{ img.survey_collection.id }}">
-                                <input type="submit" class="btn btn-primary" value="Make Answer">
-                            </form>
+                    <form method="post" action="" class="post-form">
+                        <div class="card border-danger mb-3" style="width: 18rem;">
+                            <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% encode_static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
+                            <div class="card-body">
+                                <h5 class="card-title text-danger">{{ img.image.name }}</h5>
+                                <!-- <p class="card-text">No Answer</p> -->
+                                <p class="card-text">Choices:</p>
+
+                                    {% csrf_token %}
+                                    {% for choice in choices %}
+                                        <div class="form-check">
+                                            <input class="from-check-input" type="radio" id="{{ img.id }}.{{ choice.id }}" name="answer" value="{{ choice.id }}">
+                                            <label class="form-check-label" for="{{ img.id }}.{{ choice.id }}">{{ choice.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                    <br>
+                                    <input type="hidden" name="img" value="{{ img.id }}">
+                                    <input type="hidden" name="survey_collection" value="{{ img.survey_collection.id }}">
+                                    <input type="submit" class="btn btn-primary" value="Make Answer">
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 {% else %}
-                    <div class="card border-success mb-3" style="width: 18rem;">
-                        <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% encode_static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
-                        <div class="card-body">
-                            <h5 class="card-title text-success">{{ img.image.name }}</h5>
-                            <!-- <p class="card-text">Answers: {{ ans.choice }}</p> -->
-                            <p class="card-text">Choices:</p>
-                            <form method="post" action="" class="post-form">
-                                {% csrf_token %}
-                                {% for choice in choices %}
-                                    <div class="form-check">
-                                        <input class="from-check-input" type="radio" id="{{ img.id }}.{{ choice.id }}" name="answer" value="{{ choice.id }}"
-                                                {% if ans.choice.name == choice.name %}
-                                                    checked
-                                                {% endif %} >
-                                        <label class="form-check-label" for="{{ img.id }}.{{ choice.id }}">{{ choice.name }}</label>
-                                    </div>
-                                {% endfor %}
-                                <br>
-                                <input type="hidden" name="img" value="{{ img.id }}">
-                                <input type="hidden" name="survey_collection" value="{{ img.survey_collection.id }}">
-                                <input type="submit" class="btn btn-primary" value="Change Answer">
-                            </form>
+                    <form method="post" action="" class="post-form">
+                        <div class="card border-success mb-3" style="width: 18rem;">
+                            <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection={{ img.survey_collection.id }}"><img src="{% encode_static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
+                            <div class="card-body">
+                                <h5 class="card-title text-success">{{ img.image.name }}</h5>
+                                <!-- <p class="card-text">Answers: {{ ans.choice }}</p> -->
+                                <p class="card-text">Choices:</p>
+                                    {% csrf_token %}
+                                    {% for choice in choices %}
+                                        <div class="form-check">
+                                            <input class="from-check-input" type="radio" id="{{ img.id }}.{{ choice.id }}" name="answer" value="{{ choice.id }}"
+                                                    {% if ans.choice.name == choice.name %}
+                                                        checked
+                                                    {% endif %} >
+                                            <label class="form-check-label" for="{{ img.id }}.{{ choice.id }}">{{ choice.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                    <br>
+                                    <input type="hidden" name="img" value="{{ img.id }}">
+                                    <input type="hidden" name="survey_collection" value="{{ img.survey_collection.id }}">
+                                    <input type="submit" class="btn btn-primary" value="Change Answer">
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 {% endif %}
             </div>
         {% endfor %}

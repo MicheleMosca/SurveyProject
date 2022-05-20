@@ -5,6 +5,13 @@ $(document).ready(function (){
         event.preventDefault();
 
         const form = $(this);
+
+        const div = form.children('div').get(0);
+        div.className = "card border-success mb-3";
+
+        const h5 = form.children('div').children('div').children('h5').get(0);
+        h5.className = "card-title text-success";
+
         $.ajax({
             type: "POST",
             url: "",
