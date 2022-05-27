@@ -7,12 +7,33 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script rel="javascript" type="text/javascript" src="{% static 'survey/js/survey.js' %}"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
 
 <form method="post" action="" class="post-form">
     {% csrf_token %}
     <div class="container">
-        <div class="text-center">
-            <img src="{% encode_static image.image.path %}" alt="{{ image.image.name }}" class="img-thumbnail">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm align-self-center">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary btn-floating btn-circle">
+                            <i class="bi-chevron-left" style="font-size: 2rem; color: white;"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="text-center">
+                        <img src="{% encode_static image.image.path %}" alt="{{ image.image.name }}" class="img-thumbnail">
+                    </div>
+                </div>
+                <div class="col-sm align-self-center">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary btn-floating btn-circle" >
+                            <i class="bi-chevron-right" style="font-size: 2rem; color: white;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
         <br>
         <h3 class="text-start">Choose an answer:</h3>
