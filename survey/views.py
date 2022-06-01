@@ -70,13 +70,37 @@ def surveyView(request):
             return JsonResponse(response)
 
     img_id = request.GET.get('img')
-    survey_collection_id = request.GET.get('survey_collection')
+    survey_collection_id = request.GET.get('survey_collection_id')
     user_id = request.user.id
 
-    image = Image_Collection.objects.filter(image_id=img_id, survey_collection_id=survey_collection_id).first()
+    survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
+    user_answers = Answer.objects.filter(user_id=user_id)
+    image = Image_Collection.objects.filter(image_id=img_id,
+                                            survey_collection_id=survey_collection_id).first()
+    # Check if unvoted checkbox is selected
+    show_only_unvoted = False
+    if request.GET.get('show_only_unvoted') == 'on':
+        show_only_unvoted = True
+
+    images_dict = get_images_dict(survey_images, user_answers, show_only_unvoted)
+    images_list = list(images_dict.keys())
+
+    prev_img = None
+    next_img = None
+
+    # Check if the current image is an unvoted image, otherwise use the first unvoted image
+    if image not in images_list:
+        image = images_list[0]
+
+    if images_list.index(image) != 0:
+        prev_img = images_list[images_list.index(image) - 1].image_id
+
+    if images_list.index(image) != len(images_list)-1:
+        next_img = images_list[images_list.index(image) + 1].image_id
+
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
     selected_choice = Answer.objects.filter(image_collection_id=image.id,
-                                            user_id=user_id).first()
+                                            user_id=user_id).first()    # TODO: Evitare pure qui la query
     comment = None
     if selected_choice is not None:
         comment = selected_choice.comment
@@ -86,6 +110,9 @@ def surveyView(request):
         'choices': choices,
         'selected_choice': selected_choice,
         'comment': comment,
+        'prev': prev_img,
+        'next': next_img,
+        'show_only_unvoted': show_only_unvoted,
     }
     return render(request, 'survey/survey.html', context)
 
@@ -102,6 +129,27 @@ def homeView(request):
     }
 
     return render(request, 'survey/home.html', context)
+
+
+def get_images_dict(survey_images, user_answers, show_only_unvoted):
+    images_dict = dict()
+    for img in survey_images:
+        images_dict[img] = None
+        for ans in user_answers:
+            if ans.image_collection_id == img.id:
+                images_dict[img] = ans
+
+    # Remove all voted images from the dict
+    img_list = list()
+    if show_only_unvoted:
+        for img, ans in images_dict.items():
+            if ans is not None:
+                img_list.append(img)
+
+        for img in img_list:
+            images_dict.pop(img)
+
+    return images_dict
 
 
 @login_required(login_url='survey:login')
@@ -127,27 +175,12 @@ def collectionView(request):
     user_answers = Answer.objects.filter(user_id=user_id)
     survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
 
-    images_dict = dict()
-    for img in survey_images:
-        images_dict[img] = None
-        for ans in user_answers:
-            if ans.image_collection_id == img.id:
-                images_dict[img] = ans
-
     # Check if unvoted checkbox is selected
     show_only_unvoted = False
-    if request.POST.get('show_only_unvoted') == 'on':
+    if request.GET.get('show_only_unvoted') == 'on':
         show_only_unvoted = True
 
-    # Remove all voted images from the dict
-    img_list = list()
-    if show_only_unvoted:
-        for img, ans in images_dict.items():
-            if ans is not None:
-                img_list.append(img)
-
-        for img in img_list:
-            images_dict.pop(img)
+    images_dict = get_images_dict(survey_images, user_answers, show_only_unvoted)
 
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
 
