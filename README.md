@@ -6,11 +6,14 @@
 ## Upcoming Features:
 - [X] User login page
 - [X] User registration page
-- [ ] Home page
-- [ ] Index page with project description
-- [ ] Personal User page
-- [X] Grid Image view
+- [ ] Administration Panel
+- [ ] Results Page
+- [ ] Home page with project description
+- [X] Grid Collection Images view
 - [X] Jump to unvoted images
+- [X] Zoomed Collection Images view
+- [X] Use of Ajax for form submit
+- [X] Use of a script to create/modify collection with a YAML configuration file 
 
 ### TODO List:
 - [X] Define DB structure
@@ -19,9 +22,11 @@
 - [X] Create a new view to serve server with the image in base64
 - [ ] Apply Image transformations with pillow and offuscate path in base64
 - [X] Create an upload image script with yaml language
-- [ ] Use ajax for the management of the forms on the website
-- [ ] Insert a next and previews button near the zoomed image
-- [ ] Insert the checkbox to visualize only unvoted images in the zoomed image view
+- [X] Use ajax for the management of the forms on the website
+- [X] Insert a next and previews button near the zoomed image
+- [X] Insert the checkbox to visualize only unvoted images in the zoomed image view
+- [ ] Connect the Image Collection Loader script with the admin panel view
+- [ ] Create a results page connected to the administration panel
 
 ### Database Scheme:
 This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2GqZGYSDZ8)

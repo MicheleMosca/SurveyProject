@@ -1,11 +1,12 @@
+import yaml
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 
-from .models import Survey, Image_Collection, Answer, Choice
+from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection
 
 
 def indexView(request):
@@ -52,6 +53,22 @@ def logoutUser(request):
     return redirect('survey:login')
 
 
+@permission_required('is_superuser')
+def adminView(request):
+    if request.method == 'POST':
+        file = request.FILES['file']
+        data = yaml.load(file, Loader=yaml.FullLoader)
+        print(data)  # TODO: Collegare lo script di creazione delle collection con questa view
+
+    collection_list = Survey_Collection.objects.all()  # TODO: Creare una pagina di visualizzazione dei risultati
+
+    context = {
+        'collection_list': collection_list
+    }
+
+    return render(request, 'survey/adminPage.html', context)
+
+
 @login_required(login_url='survey:login')
 def surveyView(request):
     # Write changes on the db
@@ -95,12 +112,12 @@ def surveyView(request):
     if images_list.index(image) != 0:
         prev_img = images_list[images_list.index(image) - 1].image_id
 
-    if images_list.index(image) != len(images_list)-1:
+    if images_list.index(image) != len(images_list) - 1:
         next_img = images_list[images_list.index(image) + 1].image_id
 
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
     selected_choice = Answer.objects.filter(image_collection_id=image.id,
-                                            user_id=user_id).first()    # TODO: Evitare pure qui la query
+                                            user_id=user_id).first()
     comment = None
     if selected_choice is not None:
         comment = selected_choice.comment
@@ -119,6 +136,9 @@ def surveyView(request):
 
 @login_required(login_url='survey:login')
 def homeView(request):
+    if request.user.is_superuser:
+        return redirect('survey:admin')
+
     try:
         survey_list = Survey.objects.filter(user_id=request.user.id)
     except (KeyError, Survey.DoesNotExist):
@@ -193,4 +213,3 @@ def collectionView(request):
         'choices': choices,
     }
     return render(request, 'survey/collection.html', context)
-

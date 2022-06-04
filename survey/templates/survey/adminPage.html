@@ -1,0 +1,24 @@
+<html>
+<body>
+    {% load static %}
+    {% include 'survey/navbar.html' %}
+
+    <h1 class="text-center">Administration Panel</h1>
+
+    <div class="container">
+        <p>Upload YAML configuration file to add/modify collections:</p>
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" id="myFile" name="file" class="form-control" accept=".yaml">
+            <input type="submit" class="btn btn-primary">
+        </form>
+
+        Collection Results:
+        <div class="list-group list-group-flush">
+        {% for collection in collection_list %}
+            <a class="list-group-item list-group-item-action" href="#">Collection {{ collection.id }}</a>
+        {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
