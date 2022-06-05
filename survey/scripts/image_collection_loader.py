@@ -4,7 +4,7 @@ import yaml
 # python manage.py runscript image_collection_loader --script-args survey/static/survey/collection/new_collection.yaml
 
 
-def image_loader(images, collection_object):
+def add_images(images, collection_object):
     for img in images:
         path = img['path']
         name = img.get('name', (path.split('/')[-1]).split('.')[0])
@@ -46,16 +46,7 @@ def add_choices(choices, collection_object):
               f"Collection id: {choice_object[0].survey_collection_id} added!")
 
 
-def run(*args):
-    if len(args) != 1:
-        print(f"Error: incorrect parameters! file.yaml is needed")
-        exit(1)
-
-    print(f"Load: {args[0]}")
-    file = open(args[0], "r")
-    data = yaml.load(file, Loader=yaml.FullLoader)
-    print(data)
-
+def create_or_modify_collections(data):
     collection = data.get('collection')
     if collection is None:
         print("Error: The collection is empty!")
@@ -64,10 +55,6 @@ def run(*args):
     collection_id = collection.get('id')
     description = collection.get('description', '')
     choices = collection.get('choices')
-
-    if choices is None:
-        print("Errore: The new collection doesn't have any choices for the answer!")
-        exit(2)
 
     if collection_id is not None:
         print(f"Modifico la collection {collection_id}")
@@ -81,6 +68,9 @@ def run(*args):
 
     else:
         print("Creo una nuova collection")
+        if choices is None:
+            print("Errore: The new collection doesn't have any choices for the answer!")
+            exit(2)
         collection_object = Survey_Collection(description=description)
         collection_object.save()
         print(f"Collection id: {collection_object.id}")
@@ -90,8 +80,21 @@ def run(*args):
 
     images = collection.get('images')
     if images is not None:
-        image_loader(images, collection_object)
+        add_images(images, collection_object)
 
     users = collection.get('users')
     if users is not None:
         add_users(users, collection_object)
+
+
+def run(*args):
+    if len(args) != 1:
+        print(f"Error: incorrect parameters! file.yaml is needed")
+        exit(1)
+
+    print(f"Load: {args[0]}")
+    file = open(args[0], "r")
+    data = yaml.load(file, Loader=yaml.FullLoader)
+    print(data)
+
+    create_or_modify_collections(data)

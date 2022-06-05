@@ -5,8 +5,8 @@ from .forms import CreateUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
-
 from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection
+from .scripts.image_collection_loader import create_or_modify_collections
 
 
 def indexView(request):
@@ -53,12 +53,13 @@ def logoutUser(request):
     return redirect('survey:login')
 
 
-@permission_required('is_superuser')
+@permission_required('is_staff')
 def adminView(request):
     if request.method == 'POST':
         file = request.FILES['file']
         data = yaml.load(file, Loader=yaml.FullLoader)
-        print(data)  # TODO: Collegare lo script di creazione delle collection con questa view
+        print(data)
+        create_or_modify_collections(data)  # TODO: Scrivere il codice js con l'integrazione di ajax e controlli lato client
 
     collection_list = Survey_Collection.objects.all()  # TODO: Creare una pagina di visualizzazione dei risultati
 

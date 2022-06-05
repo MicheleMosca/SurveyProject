@@ -1,16 +1,14 @@
 collection:
-    description: "Collection number 5"
+    description: "Collection number 6"
 
     images:
         -   path: "survey/images/ISIC_0626118.jpg"
         -   path: "survey/images/ISIC_0615970.jpg"
         -   path: "survey/images/ISIC_1662872.jpg"
-        -   path: "survey/images/ISIC_1825481.jpg"
-        -   path: "survey/images/ISIC_1901298.jpg"
 
     choices:
-        -   name: "Collection5_Option1"
-        -   name: "Collection5_Option2"
-        -   name: "Collection5_Option3"
+        -   name: "Collection6_Option1"
+        -   name: "Collection6_Option2"
+        -   name: "Collection6_Option3"
 
     users: ['prova1', 'prova2']
