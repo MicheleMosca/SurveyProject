@@ -1,25 +1,52 @@
-<h1>Login</h1>
+<!-- Font Awesome -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<!-- Google Fonts -->
+<link
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+  rel="stylesheet"
+/>
+<!-- MDB -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.1.0/mdb.min.css"
+  rel="stylesheet"
+/>
+<!-- MDB -->
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.1.0/mdb.min.js"
+></script>
 
-<form method="POST" action="">
-    {% csrf_token %}
+<div class="container">
+    <h1 class="text-center">Login</h1>
 
-    <label>
-        <input type="text" name="username" placeholder="Username...">
-    </label>
-    <br> <br>
-    <label>
-        <input type="password" name="password" placeholder="Password...">
-    </label>
-    {% for message in messages %}
+    <form method="POST" action="">
+        {% csrf_token %}
+
+        <div class="form-outline mb-4">
+            <input type="text" name="username" id="username" class="form-control"/>
+            <label class="form-label" for="username">Username</label>
+        </div>
+
+        <div class="form-outline mb-4">
+            <input type="password" name="password" id="password" class="form-control"/>
+            <label class="form-label" for="password">Password</label>
+        </div>
+
+        {% for message in messages %}
+            <br> <br>
+            <p id="message">{{ message }}</p>
+        {% endfor %}
+
         <br> <br>
-        <p id="message">{{ message }}</p>
-    {% endfor %}
-    <br> <br>
-    <laber for="checkbox">
-        <input type="checkbox" name="remember_me"> Remember me
-    </laber>
-    <br> <br>
-    <input type="submit" name="Login" value="Login">
-</form>
+        <laber for="checkbox">
+            <input type="checkbox" name="remember_me"> Remember me
+        </laber>
+        <br> <br>
+        <input type="submit" name="Login" value="Login">
+    </form>
 
-<h3>Don't have an account? <a href="{% url 'survey:register' %}">Sign Up</a></h3>
+    <h3>Don't have an account? <a href="{% url 'survey:register' %}">Sign Up</a></h3>
+</div>

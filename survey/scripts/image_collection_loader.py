@@ -4,10 +4,10 @@ import yaml
 # python manage.py runscript image_collection_loader --script-args survey/static/survey/collection/new_collection.yaml
 
 errorMsg = {
-    1:  "Error: incorrect parameters! file.yaml is needed",
-    2:  "Error: The new collection doesn't have any choices for the answer!",
-    3:  "Error: The collection is empty!",
-    4:  "Error: Choices need a name!"
+    1:  "Incorrect parameters! file.yaml is needed",
+    2:  "The new collection doesn't have any choices for the answer!",
+    3:  "The collection is empty!",
+    4:  "Choices need a name!"
 }
 
 
@@ -45,7 +45,7 @@ def add_choices(choices, collection_object):
     for choice in choices:
         name = choice.get('name')
         if name is None:
-            print(errorMsg[4])
+            print(f"Error: {errorMsg[4]}")
             return 4
 
         choice_object = Choice.objects.get_or_create(name=choice['name'], survey_collection_id=collection_object.id)
@@ -56,7 +56,7 @@ def add_choices(choices, collection_object):
 def create_or_modify_collections(data):
     collection = data.get('collection')
     if collection is None:
-        print(errorMsg[3])
+        print(f"Error: {errorMsg[3]}")
         return 3
 
     collection_id = collection.get('id')
@@ -76,7 +76,7 @@ def create_or_modify_collections(data):
     else:
         print("Creo una nuova collection")
         if choices is None:
-            print(errorMsg[2])
+            print(f"Error: {errorMsg[2]}")
             return 2
         collection_object = Survey_Collection(description=description)
         collection_object.save()
@@ -98,7 +98,7 @@ def create_or_modify_collections(data):
 
 def run(*args):
     if len(args) != 1:
-        print(errorMsg[1])
+        print(f"Error: {errorMsg[1]}")
         return 1
 
     print(f"Load: {args[0]}")

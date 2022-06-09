@@ -31,7 +31,7 @@
                                 <input type="hidden" name="show_only_unvoted" value="on">
                             {% endif %}
                             <input type="hidden" name="survey_collection_id" value="{{ image.survey_collection_id }}">
-                            <button type="submit" class="btn btn-primary btn-floating btn-circle" {% if prev == None %} disabled {% endif %}>
+                            <button type="submit" class="btn btn-primary btn-floating btn-lg" {% if prev == None %} disabled {% endif %}>
                                 <i class="bi-chevron-left" style="font-size: 2rem; color: white;"></i>
                             </button>
                         </form>
@@ -50,7 +50,7 @@
                                 <input type="hidden" name="show_only_unvoted" value="on">
                             {% endif %}
                             <input type="hidden" name="survey_collection_id" value="{{ image.survey_collection_id }}">
-                            <button type="submit" class="btn btn-primary btn-floating btn-circle" {% if next == None %} disabled {% endif %}>
+                            <button type="submit" class="btn btn-primary btn-floating btn-lg" {% if next == None %} disabled {% endif %}>
                                 <i class="bi-chevron-right" style="font-size: 2rem; color: white;"></i>
                             </button>
                         </form>

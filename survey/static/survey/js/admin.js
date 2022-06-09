@@ -6,14 +6,14 @@ $(document).ready(function (){
 
         const form = $('.post-form')[0];
         const formData = new FormData(form);
-        const input = $(this).children('input').get(1);
+        const input = $(this).children('div').children('div').children('div').children('input').get(0);
 
         if (formData.get('file').name === '')
         {
             Swal.fire({
                 position: 'top',
                 icon: 'error',
-                title: 'Error: File is not selected!',
+                title: 'File is not selected!',
                 showConfirmButton: true
             })
         } else {

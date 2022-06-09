@@ -28,7 +28,7 @@
             <div class="col">
                 {% if ans.choice == None %}
                     <form method="post" action="" class="post-form">
-                        <div class="card border-danger mb-3" style="width: 18rem;">
+                        <div class="card border-danger mb-3 shadow bg-white rounded" style="width: 18rem;">
                             <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection_id={{ img.survey_collection.id }}{% if show_only_unvoted == True %}&show_only_unvoted=on{% endif %}"><img src="{% encode_static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
                             <div class="card-body">
                                 <h5 class="card-title text-danger">{{ img.image.name }}</h5>
@@ -51,7 +51,7 @@
                     </form>
                 {% else %}
                     <form method="post" action="" class="post-form">
-                        <div class="card border-success mb-3" style="width: 18rem;">
+                        <div class="card border-success mb-3 shadow bg-white rounded" style="width: 18rem;">
                             <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection_id={{ img.survey_collection.id }}"><img src="{% encode_static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
                             <div class="card-body">
                                 <h5 class="card-title text-success">{{ img.image.name }}</h5>
