@@ -41,9 +41,15 @@ def loginView(request):
                 request.session.set_expiry(0)
 
             # else browser session will be ad long as the sesison cookie time "SESSION_COOKIE_AGE"
-            return redirect('survey:home')
+            response = {
+                'msg': 'Login Success'
+            }
+            return JsonResponse(response)
         else:
-            messages.info(request, 'Username or Password is incorrect')
+            response = {
+                'error': 'Username or Password is incorrect'
+            }
+            return JsonResponse(response)
 
     return render(request, 'survey/login.html')
 
