@@ -14,16 +14,23 @@ def indexView(request):
 
 
 def registerView(request):
-    form = CreateUserForm()
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Account was created for ' + user)
-            return redirect('survey:login')
 
-    return render(request, 'survey/register.html', {'form': form})
+            response = {
+                'msg': 'Account Created'
+            }
+            return JsonResponse(response)
+        else:
+            print(form.errors)  # TODO: Sistemare la lista degli errori in js
+            response = {
+                'error': form.errors,
+            }
+            return JsonResponse(response)
+
+    return render(request, 'survey/register.html')
 
 
 def loginView(request):

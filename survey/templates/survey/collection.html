@@ -1,6 +1,6 @@
-{% load static %}
 <!DOCTYPE html>
 <html>
+{% load static %}
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -12,15 +12,13 @@
     <script rel="javascript" type="text/javascript" src="{% static 'survey/js/collection.js' %}"></script>
     <h1 class="text-center"> Survey Images Collection {{ survey_collection_id }} </h1>
 
-    <div>
+    <div class="form-check form-switch mb-3 mx-4 py-3">
         <form method="get" action="">
             <input type="hidden" name="survey_collection_id" value="{{ survey_collection_id }}">
-            <label>Show Only Unvoted Images</label>
-            <input type="checkbox" name="show_only_unvoted" onchange="this.form.submit()" {% if show_only_unvoted == True %} checked {% endif %}>
+            <input class="form-check-input" type="checkbox" name="show_only_unvoted" id="show_only_unvoted" onchange="this.form.submit()" {% if show_only_unvoted == True %} checked {% endif %}>
+            <label class="form-check-label" for="show_only_unvoted">Only Unvoted</label>
         </form>
     </div>
-
-    <div id="alert-box"></div>
 
     <div class="container">
         <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
