@@ -13,23 +13,19 @@ $(document).ready(function (){
 
                 success: function (response){
                     if ('error' in response) {
-                        const div = document.getElementsByClassName('error-messages')[0];
-                        div.insertAdjacentHTML(
-                            'afterend',
-                            response['error'],
-                        );
-
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(response['error'], 'text/html');
                         const list = doc.getElementsByTagName('ul')[0];
 
-                        for (let i=0; i < list.children.length; i++)
-                        {
-                            const element = list.children[i].childNodes[0].textContent; // TODO: Aggiungerlo al sito
-                            const context = list.children[i].childNodes[1].textContent;
-                            console.log(element);
-                            console.log(context);
-                        }
+                        const context = list.children[0].childNodes[1].textContent;
+
+                        Swal.fire({
+                            position: 'top',
+                            icon: 'error',
+                            title: context,
+                            showConfirmButton: false,
+                            timer: 1850
+                        })
                     }
                     else if('msg' in response){
                         Swal.fire({

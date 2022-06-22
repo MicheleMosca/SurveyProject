@@ -24,7 +24,7 @@ def registerView(request):
             }
             return JsonResponse(response)
         else:
-            print(form.errors)  # TODO: Sistemare la lista degli errori in js
+            print(form.errors)
             response = {
                 'error': f'{form.errors}',
             }
