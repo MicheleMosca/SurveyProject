@@ -24,7 +24,7 @@
     <div class="container">
         <div class="container">
             <div class="row">
-                <div class="col-sm align-self-center">
+                <div class="col-sm-2 align-self-center">
                     <div class="text-center">
                         <form method="get" action="">
                             <input type="hidden" name="img" value="{{ prev }}">
@@ -38,12 +38,33 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-lg-5">
+                <div class="col-lg">
                     <div class="text-center">
                         <img src="{% encode_static image.image.path %}" alt="{{ image.image.name }}" class="img-thumbnail">
                     </div>
+                    <form method="post" action="" class="post-form">
+                        {% csrf_token %}
+                        <h3 class="text-start pt-5">Choose an answer:</h3>
+                        {% for choice in choices %}
+                            <div class="form-check">
+                                <input class="from-check-input" type="radio" id="{{ choice.id }}" name="answer" value="{{ choice.id }}"
+                                        {% if selected_choice and choice.id == selected_choice.choice_id %}
+                                            checked
+                                        {% endif %} >
+                                <label class="form-check-label" for="{{ choice.id }}">{{ choice.name }}</label>
+                            </div>
+                        {% endfor %}
+                        <h4 class="text-start pt-4">Comment (optional):</h4>
+                        <textarea class="form-control pt-1" rows="5" cols="70" name="comment" >{% if comment %} {{ comment }} {% endif %}</textarea>
+                        <input type="hidden" name="img" value="{{ image.id }}">
+                        <input type="hidden" name="survey_collection_id" value="{{ image.survey_collection_id }}">
+                        <div class="container pt-3">
+                            <a class="btn btn-primary" href="{% url 'survey:collection' %}?survey_collection_id={{ image.survey_collection_id }}{% if show_only_unvoted == True %}&show_only_unvoted=on{% endif %}" >Back</a>
+                            <input class="btn btn-primary mx-5" type="submit" name="Send Answer" value="Send">
+                        </div>
+                    </form>
                 </div>
-                <div class="col-sm align-self-center">
+                <div class="col-sm-2 align-self-center">
                     <div class="text-center">
                         <form method="get" action="">
                             <input type="hidden" name="img" value="{{ next }}">
@@ -59,29 +80,7 @@
                 </div>
             </div>
         </div>
-        <br>
-        <form method="post" action="" class="post-form">
-            {% csrf_token %}
-            <h3 class="text-start">Choose an answer:</h3>
-            {% for choice in choices %}
-                <div class="form-check">
-                    <input class="from-check-input" type="radio" id="{{ choice.id }}" name="answer" value="{{ choice.id }}"
-                            {% if selected_choice and choice.id == selected_choice.choice_id %}
-                                checked
-                            {% endif %} >
-                    <label class="form-check-label" for="{{ choice.id }}">{{ choice.name }}</label>
-                </div>
-            {% endfor %}
-            <br><br>
-            <h4 class="text-start">Comment (optional):</h4>
-            <br>
-            <textarea rows="5" cols="70" name="comment" >{% if comment %} {{ comment }} {% endif %}</textarea>
-            <input type="hidden" name="img" value="{{ image.id }}">
-            <input type="hidden" name="survey_collection_id" value="{{ image.survey_collection_id }}">
-            <br><br>
-            <input class="btn btn-primary" type="submit" name="Send Answer" value="Send Answer">
-            <a class="btn btn-primary" href="{% url 'survey:collection' %}?survey_collection_id={{ image.survey_collection_id }}{% if show_only_unvoted == True %}&show_only_unvoted=on{% endif %}" >Go back</a>
-        </form>
     </div>
+    <div class="my-4"></div>
 </body>
 </html>

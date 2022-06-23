@@ -1,5 +1,6 @@
 from survey.models import Image, Survey_Collection, Image_Collection, User, Survey, Choice
 import yaml
+
 # Usage:
 # python manage.py runscript image_collection_loader --script-args survey/static/survey/collection/new_collection.yaml
 

@@ -28,7 +28,7 @@
         Collection Results:
         <div class="list-group list-group-flush">
         {% for collection in collection_list %}
-            <a class="list-group-item list-group-item-action" href="#">Collection {{ collection.id }}</a>
+            <a class="list-group-item list-group-item-action" href="{% url 'survey:results' %}?&survey_collection_id={{ collection.id }}">Collection {{ collection.id }}</a>
         {% endfor %}
         </div>
     </div>

@@ -2,7 +2,6 @@ import yaml
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm
-from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection
@@ -93,6 +92,16 @@ def adminView(request):
     }
 
     return render(request, 'survey/adminPage.html', context)
+
+
+@permission_required('is_staff')
+def resultsView(request):
+
+
+    context = {
+
+    }
+    return render(request, 'survey/results.html', context)
 
 
 @login_required(login_url='survey:login')
