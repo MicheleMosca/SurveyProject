@@ -103,10 +103,12 @@ def adminView(request):
 
 @permission_required('is_staff')
 def resultsView(request):
+    survey_collection_id = request.GET.get('survey_collection_id')
+    user_id_list = [query[0] for query in Survey.objects.filter(survey_collection_id=3).values_list('user_id')]
 
 
     context = {
-
+        'survey_collection_id': survey_collection_id
     }
     return render(request, 'survey/results.html', context)
 
