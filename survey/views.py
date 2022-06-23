@@ -1,11 +1,18 @@
 import yaml
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
+
+
+def checkPermissionOnSurvey(user_id, survey_collection_id):
+    if not Survey.objects.filter(user_id=user_id, survey_collection_id=survey_collection_id):
+        return False
+
+    return True
 
 
 def indexView(request):
@@ -124,6 +131,8 @@ def surveyView(request):
     img_id = request.GET.get('img')
     survey_collection_id = request.GET.get('survey_collection_id')
     user_id = request.user.id
+    if not checkPermissionOnSurvey(user_id=user_id, survey_collection_id=survey_collection_id):
+        return HttpResponseForbidden()
 
     survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
     user_answers = Answer.objects.filter(user_id=user_id)
@@ -227,6 +236,9 @@ def collectionView(request):
 
     user_id = request.user.id
     survey_collection_id = request.GET.get('survey_collection_id')
+    if not checkPermissionOnSurvey(user_id=user_id, survey_collection_id=survey_collection_id):
+        return HttpResponseForbidden()
+
     user_answers = Answer.objects.filter(user_id=user_id)
     survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
 
