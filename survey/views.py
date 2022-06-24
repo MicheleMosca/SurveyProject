@@ -8,11 +8,20 @@ from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
 
 
-def checkPermissionOnSurvey(user_id, survey_collection_id):
-    if not Survey.objects.filter(user_id=user_id, survey_collection_id=survey_collection_id):
-        return False
+def permission_on_survey_required(f):
+    '''
+    Decorator fuction to check if the user is allowed to interact with the current survey collection
+    :param f: view function
+    :return: the view function or HttpResponseForbidden()
+    '''
+    def checkPermissionOnSurvey(request):
+        user_id = request.user.id
+        survey_collection_id = request.GET.get('survey_collection_id')
+        if not Survey.objects.filter(user_id=user_id, survey_collection_id=survey_collection_id):
+            return HttpResponseForbidden()
+        return f(request)
 
-    return True
+    return checkPermissionOnSurvey
 
 
 def indexView(request):
@@ -105,7 +114,7 @@ def adminView(request):
 def resultsView(request):
     survey_collection_id = request.GET.get('survey_collection_id')
     user_id_list = [query[0] for query in Survey.objects.filter(survey_collection_id=3).values_list('user_id')]
-
+    img_choices_dict = None
 
     context = {
         'survey_collection_id': survey_collection_id
@@ -114,6 +123,7 @@ def resultsView(request):
 
 
 @login_required(login_url='survey:login')
+@permission_on_survey_required
 def surveyView(request):
     # Write changes on the db
     if request.method == 'POST':
@@ -133,9 +143,6 @@ def surveyView(request):
     img_id = request.GET.get('img')
     survey_collection_id = request.GET.get('survey_collection_id')
     user_id = request.user.id
-    if not checkPermissionOnSurvey(user_id=user_id, survey_collection_id=survey_collection_id):
-        return HttpResponseForbidden()
-
     survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
     user_answers = Answer.objects.filter(user_id=user_id)
     image = Image_Collection.objects.filter(image_id=img_id,
@@ -219,6 +226,7 @@ def get_images_dict(survey_images, user_answers, show_only_unvoted):
 
 
 @login_required(login_url='survey:login')
+@permission_on_survey_required
 def collectionView(request):
     # Write changes on the db
     if request.method == 'POST':
@@ -238,9 +246,6 @@ def collectionView(request):
 
     user_id = request.user.id
     survey_collection_id = request.GET.get('survey_collection_id')
-    if not checkPermissionOnSurvey(user_id=user_id, survey_collection_id=survey_collection_id):
-        return HttpResponseForbidden()
-
     user_answers = Answer.objects.filter(user_id=user_id)
     survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
 
