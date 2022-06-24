@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
-from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection
+from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection, User
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
 
 
@@ -14,6 +14,7 @@ def permission_on_survey_required(f):
     :param f: view function
     :return: the view function or HttpResponseForbidden()
     '''
+
     def checkPermissionOnSurvey(request):
         user_id = request.user.id
         survey_collection_id = request.GET.get('survey_collection_id')
@@ -113,11 +114,24 @@ def adminView(request):
 @permission_required('is_staff')
 def resultsView(request):
     survey_collection_id = request.GET.get('survey_collection_id')
-    user_id_list = [query[0] for query in Survey.objects.filter(survey_collection_id=3).values_list('user_id')]
-    img_choices_dict = None
+    user_list = [User.objects.filter(id=query[0]).first() for query in
+                 Survey.objects.filter(survey_collection_id=survey_collection_id).values_list('user_id')]
+    img_collection = [img for img in Image_Collection.objects.filter(survey_collection_id=survey_collection_id)]
+    choice = [choice for choice in Choice.objects.filter(survey_collection_id=survey_collection_id)]
+    img_collection_to_choice_dict = {i: {c: 0 for c in choice} for i in img_collection}
+
+    for user in user_list:
+        for img in img_collection:
+            (img_collection_to_choice_dict[img])[
+                Choice.objects.filter(id=Answer.objects.filter(image_collection_id=img.id, user_id=user.id)
+                                      .values_list('choice_id').first()[0]).first()] += 1
 
     context = {
-        'survey_collection_id': survey_collection_id
+        'survey_collection_id': survey_collection_id,
+        'img_collection_to_choice_dict': {key.image.name: {k2.name: (v2 / len(user_list) * 100, v2) for k2, v2 in
+                                                           value.items()} for key, value in
+                                          img_collection_to_choice_dict.items()},
+        'user_list': user_list,
     }
     return render(request, 'survey/results.html', context)
 

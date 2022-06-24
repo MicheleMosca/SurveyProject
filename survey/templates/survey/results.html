@@ -6,7 +6,23 @@
     <h1 class="text-center">Results Collection {{ survey_collection_id }}</h1>
 
     <div class="container">
+        <ul class="list-group">
+        {% for key, value in img_collection_to_choice_dict.items %}
+            <li class="list-group-item">
+                {{ key }}: <ul class="list-group">
+                    {% for k2, v2 in value.items %}
+                        <li class="list-group-item">
+                            {{ k2 }}: {{ v2.0 }}% (votes: {{ v2.1 }})
+                        </li>
+                    {% endfor %}
+            </ul>
+            </li>
+        {% endfor %}
+        </ul>
 
+        <br>
+        Users: {% for user in user_list %} {{ user.username }} {% endfor %}
+        <br><br>
     </div>
 
 </body>
