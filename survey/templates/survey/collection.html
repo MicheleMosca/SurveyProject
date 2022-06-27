@@ -27,7 +27,7 @@
                 {% if ans.choice == None %}
                     <form method="post" action="" class="post-form">
                         <div class="card border-danger mb-3 shadow bg-white rounded" style="width: 18rem;">
-                            <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection_id={{ img.survey_collection.id }}{% if show_only_unvoted == True %}&show_only_unvoted=on{% endif %}"><img src="{% encode_static img.image.path %}" class="card-img-top" alt="{{ img.image.name }}"></a>
+                            <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection_id={{ img.survey_collection.id }}{% if show_only_unvoted == True %}&show_only_unvoted=on{% endif %}"><img src="{% encode_static img.image.path transformation=img.transformation %}" class="card-img-top" alt="{{ img.image.name }}"></a>
                             <div class="card-body">
                                 <h5 class="card-title text-danger">{{ img.image.name }}</h5>
                                 <!-- <p class="card-text">No Answer</p> -->

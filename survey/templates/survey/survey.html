@@ -40,7 +40,7 @@
                 </div>
                 <div class="col-lg">
                     <div class="text-center">
-                        <img src="{% encode_static image.image.path %}" alt="{{ image.image.name }}" class="img-thumbnail">
+                        <img src="{% encode_static image.image.path transformation=image.transformation %}" alt="{{ image.image.name }}" class="img-thumbnail">
                     </div>
                     <form method="post" action="" class="post-form">
                         {% csrf_token %}
