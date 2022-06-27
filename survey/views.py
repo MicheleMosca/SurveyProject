@@ -122,16 +122,18 @@ def resultsView(request):
 
     for user in user_list:
         for img in img_collection:
-            (img_collection_to_choice_dict[img])[
-                Choice.objects.filter(id=Answer.objects.filter(image_collection_id=img.id, user_id=user.id)
-                                      .values_list('choice_id').first()[0]).first()] += 1
+            ans_id = Answer.objects.filter(image_collection_id=img.id, user_id=user.id)
+            if ans_id:
+                (img_collection_to_choice_dict[img])[Choice.objects.filter(id=ans_id.values_list('choice_id')
+                                                                           .first()[0]).first()] += 1
 
     context = {
         'survey_collection_id': survey_collection_id,
-        'img_collection_to_choice_dict': {key.image.name: {k2.name: (v2 / len(user_list) * 100, v2) for k2, v2 in
+        'img_collection_to_choice_dict': {key: {k2.name: (v2 / len(user_list) * 100, v2) for k2, v2 in
                                                            value.items()} for key, value in
                                           img_collection_to_choice_dict.items()},
         'user_list': user_list,
+        'question_list': list(list(img_collection_to_choice_dict.values())[0].keys()),
     }
     return render(request, 'survey/results.html', context)
 
