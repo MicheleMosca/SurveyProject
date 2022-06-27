@@ -129,9 +129,9 @@ def resultsView(request):
 
     context = {
         'survey_collection_id': survey_collection_id,
-        'img_collection_to_choice_dict': {key: {k2.name: (v2 / len(user_list) * 100, v2) for k2, v2 in
-                                                           value.items()} for key, value in
-                                          img_collection_to_choice_dict.items()},
+        'img_collection_to_choice_dict': {key: {k2.name: ('%.1f' % (v2 / len(user_list) * 100), v2) for k2, v2
+                                                in value.items()} for key, value
+                                          in img_collection_to_choice_dict.items()},
         'user_list': user_list,
         'question_list': list(list(img_collection_to_choice_dict.values())[0].keys()),
     }

@@ -20,11 +20,9 @@
 {#        {% endfor %}#}
 {#        </ul>#}
 
-        <br>
-        User list: {% for user in user_list %} {{ user.username }} {% endfor %}
-        <br><br>
+        <p class="pt-5">User list: [{% for user in user_list %} {{ user.username }} {% endfor %}]</p>
 
-        <table class="table table-hover mt-3">
+        <table class="table table-hover mt-5">
             <thead class="table-light">
                 <tr>
                     <th scope="col">Image Name</th>

@@ -1,2 +1,3 @@
 collection:
-  description: "Collection n.3"
+  id: 5
+  users: ['prova3']

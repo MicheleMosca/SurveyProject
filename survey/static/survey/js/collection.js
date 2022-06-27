@@ -12,6 +12,9 @@ $(document).ready(function (){
         const h5 = form.children('div').children('div').children('h5').get(0);
         h5.className = "card-title text-success";
 
+        const input_submit = form.children('div').children('div').children('input').get(3);
+        input_submit.value = "Change Answer";
+
         $.ajax({
             type: "POST",
             url: "",
