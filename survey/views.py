@@ -9,11 +9,11 @@ from .scripts.image_collection_loader import create_or_modify_collections, error
 
 
 def permission_on_survey_required(f):
-    '''
+    """
     Decorator fuction to check if the user is allowed to interact with the current survey collection
     :param f: view function
     :return: the view function or HttpResponseForbidden()
-    '''
+    """
 
     def checkPermissionOnSurvey(request):
         user_id = request.user.id
@@ -221,6 +221,13 @@ def homeView(request):
 
 
 def get_images_dict(survey_images, user_answers, show_only_unvoted):
+    """
+    Get a dict with image id as keys and answere as values for the user given as parameter
+    :param survey_images: Image_Collection queryset
+    :param user_answers: Answers query set
+    :param show_only_unvoted: True to filter only unvoted images
+    :return: dict
+    """
     images_dict = dict()
     for img in survey_images:
         images_dict[img] = None
