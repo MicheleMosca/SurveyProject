@@ -3,11 +3,14 @@
 ## Setup
 `python manage.py runserver 0:8000`
 
+## Database Image:
+![](db_image.png)
+
 ## Upcoming Features:
 - [X] User login page
 - [X] User registration page
-- [ ] Administration Panel
-- [ ] Results Page
+- [X] Administration Panel
+- [X] Results Page
 - [ ] Home page with project description
 - [X] Grid Collection Images view
 - [X] Jump to unvoted images
@@ -20,13 +23,13 @@
 - [X] Write a grid view
 - [X] Create a checkbox to visualize only unvoted images
 - [X] Create a new view to serve server with the image in base64
-- [ ] Apply Image transformations with pillow and offuscate path in base64
+- [X] Apply Image transformations with pillow and offuscate path in base64
 - [X] Create an upload image script with yaml language
 - [X] Use ajax for the management of the forms on the website
 - [X] Insert a next and previews button near the zoomed image
 - [X] Insert the checkbox to visualize only unvoted images in the zoomed image view
-- [ ] Connect the Image Collection Loader script with the admin panel view
-- [ ] Create a results page connected to the administration panel
+- [X] Connect the Image Collection Loader script with the admin panel view
+- [X] Create a results page connected to the administration panel
 
 ### Database Scheme:
 This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2GqZGYSDZ8)
