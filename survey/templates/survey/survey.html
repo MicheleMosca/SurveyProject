@@ -44,7 +44,7 @@
                     </div>
                     <form method="post" action="" class="post-form">
                         {% csrf_token %}
-                        <h3 class="text-start pt-5">Choose an answer:</h3>
+                        <h4 class="text-start pt-5">Choose an answer:</h4>
                         {% for choice in choices %}
                             <div class="form-check">
                                 <input class="from-check-input" type="radio" id="{{ choice.id }}" name="answer" value="{{ choice.id }}"
@@ -54,8 +54,8 @@
                                 <label class="form-check-label" for="{{ choice.id }}">{{ choice.name }}</label>
                             </div>
                         {% endfor %}
-                        <h4 class="text-start pt-4">Comment (optional):</h4>
-                        <textarea class="form-control pt-1" rows="5" cols="70" name="comment" >{% if comment %} {{ comment }} {% endif %}</textarea>
+                        <label class="text-start pt-4" for="comment">Comment (optional):</label>
+                        <textarea class="form-control pt-1" rows="5" cols="70" name="comment" id="comment">{% if comment %} {{ comment }} {% endif %}</textarea>
                         <input type="hidden" name="img" value="{{ image.id }}">
                         <input type="hidden" name="survey_collection_id" value="{{ image.survey_collection_id }}">
                         <div class="container pt-3">

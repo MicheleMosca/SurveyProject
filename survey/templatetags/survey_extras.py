@@ -1,9 +1,11 @@
 import base64
 import io
+import random
+
 from django import template
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.finders import find
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageEnhance
 
 register = template.Library()
 
@@ -29,6 +31,11 @@ def encode_static(path, encoding='base64', file_type='image', transformation='')
             img = ImageOps.flip(img)
         if tr == 'mirror':
             img = ImageOps.mirror(img)
+        if 'contrast' in tr:
+            enhancer = ImageEnhance.Contrast(img)
+            # factor = random.uniform(0.5, 1.5)
+            factor = float(tr.split('(')[1].split(')')[0])
+            img = enhancer.enhance(factor)
 
     img_byte_arr = io.BytesIO()
     img.save(img_byte_arr, format='JPEG')
