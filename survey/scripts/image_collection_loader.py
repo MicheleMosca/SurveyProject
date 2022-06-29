@@ -17,6 +17,25 @@ def decision(probability):
     return random.random() < probability
 
 
+def apply_transformations(image_transformation, transformations, user_id):
+    image_transformation.applied_transformation = ''
+    for transformation in transformations.split(','):
+        probability = float(transformation.split('(')[1].split(')')[0])
+        transformation = transformation.split('(')[0]
+        if decision(probability):
+            if transformation == 'contrast':
+                factor = "%.2f" % random.uniform(0.5, 1.5)
+                transformation += f'({factor})'
+
+            if image_transformation.applied_transformation == '':
+                image_transformation.applied_transformation = transformation
+            else:
+                image_transformation.applied_transformation += ',' + transformation
+
+    print(f"User_id: {user_id} Applied Trasnformations: {image_transformation.applied_transformation}")
+    image_transformation.save()
+
+
 def add_images(images, collection_object):
     for img in images:
         path = img['path']
@@ -40,30 +59,24 @@ def add_images(images, collection_object):
         for user_id in users_id:
             image_transformation = Image_Transformation.objects.update_or_create(
                 user_id=user_id, image_collection_id=image_collection_object[0].id)[0]
-            image_transformation.applied_transformation = ''
-            for transformation in transformations.split(','):
-                probability = float(transformation.split('(')[1].split(')')[0])
-                transformation = transformation.split('(')[0]
-                if decision(probability):
-                    if transformation == 'contrast':
-                        factor = "%.2f" % random.uniform(0.5, 1.5)
-                        transformation += f'({factor})'
-
-                    if image_transformation.applied_transformation == '':
-                        image_transformation.applied_transformation = transformation
-                    else:
-                        image_transformation.applied_transformation += ',' + transformation
-
-            print(f"User_id: {user_id} Applied Trasnformations: {image_transformation.applied_transformation}")
-            image_transformation.save()
+            apply_transformations(image_transformation, transformations, user_id)
 
 
 def add_users(users, collection_object):
     print(f"Adding new Users: {users}")
     for user in users:
         user_object = User.objects.filter(username=user).first()
-        Survey.objects.get_or_create(survey_collection_id=collection_object.id, user_id=user_object.id)
-        print(f"User id: {user_object.id} Username: {user_object.username} added!")
+        obj, created = Survey.objects.get_or_create(survey_collection_id=collection_object.id, user_id=user_object.id)
+        if created:
+            print(f"User id: {user_object.id} Username: {user_object.username} added!")
+            img_collection_ids = [img_collection['id'] for img_collection in
+                                  Image_Collection.objects.filter(survey_collection_id=collection_object.id)
+                                  .values('id')]
+            for img_collection_id in img_collection_ids:
+                image_transformation = Image_Transformation.objects.update_or_create(
+                    user_id=user_object.id, image_collection_id=img_collection_id)[0]
+                apply_transformations(image_transformation, collection_object.transformations, user_object.id)
+
 
 
 def add_choices(choices, collection_object):
