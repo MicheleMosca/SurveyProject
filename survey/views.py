@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
-from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection, User
+from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection, User, Image_Transformation
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
 
 
@@ -191,6 +191,12 @@ def surveyView(request):
     if selected_choice is not None:
         comment = selected_choice.comment
 
+    img_transformation = {
+        Image_Transformation.objects.filter(user_id=user_id, image_collection=img).first()
+        .image_collection_id: Image_Transformation.objects.filter(user_id=user_id, image_collection=img)
+        .first().applied_transformation for img in survey_images
+    }
+
     context = {
         'image': image,
         'choices': choices,
@@ -199,6 +205,7 @@ def surveyView(request):
         'prev': prev_img,
         'next': next_img,
         'show_only_unvoted': show_only_unvoted,
+        'img_transformation': img_transformation,
     }
     return render(request, 'survey/survey.html', context)
 
@@ -281,6 +288,12 @@ def collectionView(request):
 
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
 
+    img_transformation = {
+        Image_Transformation.objects.filter(user_id=user_id, image_collection=img).first()
+        .image_collection_id: Image_Transformation.objects.filter(user_id=user_id, image_collection=img)
+        .first().applied_transformation for img in survey_images
+    }
+
     context = {
         'user_answers': user_answers,
         'survey_images': survey_images,
@@ -288,5 +301,6 @@ def collectionView(request):
         'show_only_unvoted': show_only_unvoted,
         'survey_collection_id': survey_collection_id,
         'choices': choices,
+        'img_transformation': img_transformation,
     }
     return render(request, 'survey/collection.html', context)

@@ -40,7 +40,11 @@
                 </div>
                 <div class="col-lg">
                     <div class="text-center">
-                        <img src="{% encode_static image.image.path transformation=image.transformation %}" alt="{{ image.image.name }}" class="img-thumbnail">
+                        {% for key, val in img_transformation.items %}
+                                {% if key == image.id %}
+                                    <img src="{% encode_static image.image.path transformation=val %}" alt="{{ image.image.name }}" class="img-thumbnail">
+                                {% endif %}
+                        {% endfor %}
                     </div>
                     <form method="post" action="" class="post-form">
                         {% csrf_token %}

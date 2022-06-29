@@ -35,9 +35,7 @@
             <tbody>
                 {% for key, value in img_collection_to_choice_dict.items %}
                 <tr>
-                    <th scope="row">{{ key.image.name }}{% if key.transformation != '' %}
-                        [{{ key.transformation }}]
-                    {% endif %}</th>
+                    <th scope="row">{{ key.image.name }}</th>
                     {% for k2, v2 in value.items %}
                     <td>{{ v2.0 }}% (votes: {{ v2.1 }})</td>
                     {% endfor %}

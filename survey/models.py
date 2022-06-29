@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 class Survey_Collection(models.Model):
     description = models.CharField(max_length=200)
+    transformations = models.CharField(max_length=200, default='')
 
     def __str__(self):
         return self.id
@@ -26,12 +27,20 @@ class Image(models.Model):
 
 
 class Image_Collection(models.Model):
-    transformation = models.CharField(max_length=200)
     survey_collection = models.ForeignKey(Survey_Collection, on_delete=models.CASCADE)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = [['image', 'survey_collection']]
+
+
+class Image_Transformation(models.Model):
+    applied_transformation = models.CharField(max_length=200)
+    image_collection = models.ForeignKey(Image_Collection, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = [['image_collection', 'user']]
 
 
 class Choice(models.Model):
