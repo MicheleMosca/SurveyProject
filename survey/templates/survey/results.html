@@ -8,6 +8,7 @@
 
     <div class="container">
         <p class="pt-5">User list: [{% for user in user_list %} {{ user.username }} {% endfor %}]</p>
+        <p class="pt-1">Possibly Transformations: {{ transformations }}</p>
 
         <table class="table table-hover mt-5">
             <thead class="table-light">
@@ -20,7 +21,7 @@
             </thead>
             <tbody>
                 {% for key, value in img_collection_to_choice_dict.items %}
-                <tr data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+                <tr data-mdb-toggle="modal" data-mdb-target="#Modal_{{ key.image.name }}">
                     <th scope="row">{{ key.image.name }}</th>
                     {% for k2, v2 in value.items %}
                     <td>{{ v2.0 }}% (votes: {{ v2.1 }})</td>
@@ -31,20 +32,40 @@
         </table>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-          </div>
-          <div class="modal-body">...</div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-mdb-dismiss="modal">Close</button>
+    {% for key, val in users_answer.items %}
+        <div class="modal fade" id="Modal_{{ key.image.name }}" tabindex="-1" aria-labelledby="ModalLabel_{{ key.image.name }}" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel_{{ key.image.name }}">{{ key.image.name }}</h5>
+              </div>
+              <div class="modal-body">
+                  <table class="table">
+                      <thead class="table-light">
+                      <tr>
+                          <th scope="col">Username</th>
+                          <th class="col">Applied Transformations</th>
+                          <th class="col">Answer</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      {% for tupl in val %}
+                          <tr>
+                              <th scope="row">{{ tupl.0 }}</th>
+                              <th scope="row">{{ tupl.1 }}</th>
+                              <th scope="row">{{ tupl.2 }}</th>
+                          </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-mdb-dismiss="modal">Close</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+    {% endfor %}
 
 </body>
 </html>

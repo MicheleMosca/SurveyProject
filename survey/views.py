@@ -127,6 +127,15 @@ def resultsView(request):
                 (img_collection_to_choice_dict[img])[Choice.objects.filter(id=ans_id.values_list('choice_id')
                                                                            .first()[0]).first()] += 1
 
+    users_answer = {
+        img_coll: [
+            (user, Image_Transformation.objects.filter(user_id=user.id, image_collection_id=img_coll.id)
+             .first().applied_transformation, Answer.objects.filter(user_id=user.id, image_collection_id=img_coll.id)
+             .first().choice if Answer.objects.filter(user_id=user.id, image_collection_id=img_coll.id) else '')
+            for user in user_list
+        ] for img_coll in img_collection
+    }
+
     context = {
         'survey_collection_id': survey_collection_id,
         'img_collection_to_choice_dict': {key: {k2.name: ('%.1f' % (v2 / len(user_list) * 100), v2) for k2, v2
@@ -134,6 +143,9 @@ def resultsView(request):
                                           in img_collection_to_choice_dict.items()},
         'user_list': user_list,
         'question_list': list(list(img_collection_to_choice_dict.values())[0].keys()),
+        'users_answer': users_answer,
+        'transformations': Survey_Collection.objects.filter(id=survey_collection_id)
+        .first().transformations,
     }
     return render(request, 'survey/results.html', context)
 
