@@ -1,3 +1,5 @@
 collection:
-  id: 6
-  users: ['prova1', 'prova3']
+  id: 7
+
+  images:
+    - path: 'survey/images/ISIC_8855901.jpg'
