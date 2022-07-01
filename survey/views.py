@@ -8,21 +8,17 @@ from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection,
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
 
 
-def permission_on_survey_required(f):
+def permissionOnSurvey(request):
     """
-    Decorator fuction to check if the user is allowed to interact with the current survey collection
-    :param f: view function
-    :return: the view function or HttpResponseForbidden()
+    Check if user is authorized to interact with this collection
+    :param request:
+    :return: True if user is authorized, False otherwise
     """
-
-    def checkPermissionOnSurvey(request):
-        user_id = request.user.id
-        survey_collection_id = request.GET.get('survey_collection_id')
-        if not Survey.objects.filter(user_id=user_id, survey_collection_id=survey_collection_id):
-            return HttpResponseForbidden()
-        return f(request)
-
-    return checkPermissionOnSurvey
+    user_id = request.user.id
+    survey_collection_id = request.GET.get('survey_collection_id')
+    if not Survey.objects.filter(user_id=user_id, survey_collection_id=survey_collection_id):
+        return False
+    return True
 
 
 def indexView(request):
@@ -151,8 +147,10 @@ def resultsView(request):
 
 
 @login_required(login_url='survey:login')
-@permission_on_survey_required
 def surveyView(request):
+    if not permissionOnSurvey(request):
+        return HttpResponseForbidden()
+
     # Write changes on the db
     if request.method == 'POST':
         Answer.objects.update_or_create(
@@ -268,8 +266,10 @@ def get_images_dict(survey_images, user_answers, show_only_unvoted):
 
 
 @login_required(login_url='survey:login')
-@permission_on_survey_required
 def collectionView(request):
+    if not permissionOnSurvey(request):
+        return HttpResponseForbidden()
+
     # Write changes on the db
     if request.method == 'POST':
         if request.POST.get('img') is not None:
