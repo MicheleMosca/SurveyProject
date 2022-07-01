@@ -40,12 +40,12 @@ This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2Gq
 collection:
     id: 1                                               # Insert id if you want to add something to an existing collection
     description: "Description of the collection"
+    transformations: ['flip(0.5)', 'mirror(0.5)', 'contrast(0.2)']  # Write transformation that can be applied with its probability
 
     images:
         -   path: "survey/images/image1.jpg"
             name: "image1"                              # name can be omitted, default is the filename without extension
         -   path: "survey/images/image2.jpg"
-            transformation: 'flip'
         -   path: "survey/images/image3.jpg"
 
     choices:                                            # List new choices for the current image collection
