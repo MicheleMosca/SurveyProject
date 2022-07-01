@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+{% include 'survey/navbar.html' %}
+
+<h1 class="text-center">Active Surveys</h1>
+<br>
+<div class="container">
+    <div class="list-group list-group-flush">
+        {% for surv in survey_list %}
+            <a class="list-group-item list-group-item-action" href="{% url 'survey:collection' %}?survey_collection_id={{ surv.survey_collection_id }}">Collection {{ surv.survey_collection_id }}</a>
+        {% endfor %}
+    </div>
+</div>
+</html>

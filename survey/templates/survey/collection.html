@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    {% include 'survey/navbar.html' %}
+    {% load survey_extras %}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script rel="javascript" type="text/javascript" src="{% static 'survey/js/collection.js' %}"></script>
+    <h1 class="text-center"> Survey Images Collection {{ survey_collection_id }} </h1>
+
+    <div class="form-check form-switch mb-3 mx-4 py-3">
+        <form method="get" action="">
+            <input type="hidden" name="survey_collection_id" value="{{ survey_collection_id }}">
+            <input class="form-check-input" type="checkbox" name="show_only_unvoted" id="show_only_unvoted" onchange="this.form.submit()" {% if show_only_unvoted == True %} checked {% endif %}>
+            <label class="form-check-label" for="show_only_unvoted">Only Unvoted</label>
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+        {% for img, ans in images_dict.items %}
+            <div class="col">
+                {% if ans.choice == None %}
+                    <form method="post" action="" class="post-form">
+                        <div class="card border-danger mb-3 shadow bg-white rounded" style="width: 18rem;">
+                            {% for key, val in img_transformation.items %}
+                                {% if key == img.id %}
+                                    <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection_id={{ img.survey_collection.id }}{% if show_only_unvoted == True %}&show_only_unvoted=on{% endif %}"><img src="{% encode_static img.image.path transformation=val %}" class="card-img-top" alt="{{ img.image.name }}"></a>
+                                {% endif %}
+                            {% endfor %}
+                            <div class="card-body">
+                                <h5 class="card-title text-danger">{{ img.image.name }}</h5>
+                                <!-- <p class="card-text">No Answer</p> -->
+                                <p class="card-text">Choices:</p>
+
+                                    {% csrf_token %}
+                                    {% for choice in choices %}
+                                        <div class="form-check">
+                                            <input class="from-check-input" type="radio" id="{{ img.id }}.{{ choice.id }}" name="answer" value="{{ choice.id }}">
+                                            <label class="form-check-label" for="{{ img.id }}.{{ choice.id }}">{{ choice.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                    <br>
+                                    <input type="hidden" name="img" value="{{ img.id }}">
+                                    <input type="hidden" name="survey_collection_id" value="{{ img.survey_collection.id }}">
+                                    <input type="submit" class="btn btn-primary" value="Make Answer">
+                            </div>
+                        </div>
+                    </form>
+                {% else %}
+                    <form method="post" action="" class="post-form">
+                        <div class="card border-success mb-3 shadow bg-white rounded" style="width: 18rem;">
+                            {% for key, val in img_transformation.items %}
+                                {% if key == img.id %}
+                                    <a href="{% url 'survey:survey' %}?img={{ img.image.id }}&survey_collection_id={{ img.survey_collection.id }}"><img src="{% encode_static img.image.path transformation=val %}" class="card-img-top" alt="{{ img.image.name }}"></a>
+                                {% endif %}
+                            {% endfor %}
+                            <div class="card-body">
+                                <h5 class="card-title text-success">{{ img.image.name }}</h5>
+                                <!-- <p class="card-text">Answers: {{ ans.choice }}</p> -->
+                                <p class="card-text">Choices:</p>
+                                    {% csrf_token %}
+                                    {% for choice in choices %}
+                                        <div class="form-check">
+                                            <input class="from-check-input" type="radio" id="{{ img.id }}.{{ choice.id }}" name="answer" value="{{ choice.id }}"
+                                                    {% if ans.choice.name == choice.name %}
+                                                        checked
+                                                    {% endif %} >
+                                            <label class="form-check-label" for="{{ img.id }}.{{ choice.id }}">{{ choice.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                    <br>
+                                    <input type="hidden" name="img" value="{{ img.id }}">
+                                    <input type="hidden" name="survey_collection_id" value="{{ img.survey_collection.id }}">
+                                    <input type="submit" class="btn btn-primary" value="Change Answer">
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

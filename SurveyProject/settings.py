@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'survey.apps.SurveyConfig',
+    'django_extensions',
+    'survey.templatetags.survey_extras',
 ]
 
 MIDDLEWARE = [

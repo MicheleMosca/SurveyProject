@@ -1,5 +1,318 @@
-from django.http import HttpResponse
+import yaml
+from django.http import JsonResponse, HttpResponseForbidden
+from django.shortcuts import render, redirect
+from .forms import CreateUserForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, permission_required
+from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection, User, Image_Transformation
+from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
 
 
-def IndexView(request):
-    return HttpResponse("This is the index page of the survey site.")
+def permission_on_survey_required(f):
+    """
+    Decorator fuction to check if the user is allowed to interact with the current survey collection
+    :param f: view function
+    :return: the view function or HttpResponseForbidden()
+    """
+
+    def checkPermissionOnSurvey(request):
+        user_id = request.user.id
+        survey_collection_id = request.GET.get('survey_collection_id')
+        if not Survey.objects.filter(user_id=user_id, survey_collection_id=survey_collection_id):
+            return HttpResponseForbidden()
+        return f(request)
+
+    return checkPermissionOnSurvey
+
+
+def indexView(request):
+    return render(request, 'survey/index.html')
+
+
+def registerView(request):
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            response = {
+                'msg': 'Account Created'
+            }
+            return JsonResponse(response)
+        else:
+            print(form.errors)
+            response = {
+                'error': f'{form.errors}',
+            }
+            return JsonResponse(response)
+
+    return render(request, 'survey/register.html')
+
+
+def loginView(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        remember_me = request.POST.get('remember_me')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            if remember_me is None:
+                # if the remember me is False it will close the session after the browser is closed
+                request.session.set_expiry(0)
+
+            # else browser session will be ad long as the sesison cookie time "SESSION_COOKIE_AGE"
+            response = {
+                'msg': 'Login Success'
+            }
+            return JsonResponse(response)
+        else:
+            response = {
+                'error': 'Username or Password is incorrect'
+            }
+            return JsonResponse(response)
+
+    return render(request, 'survey/login.html')
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('survey:login')
+
+
+@permission_required('is_staff')
+def adminView(request):
+    if request.method == 'POST':
+        file = request.FILES['file']
+        data = yaml.load(file, Loader=yaml.FullLoader)
+        print(data)
+        return_code = create_or_modify_collections(data)
+        if return_code != 0:
+            error = {
+                'error': errorMsg[return_code]
+            }
+            response = JsonResponse(error)
+            return response
+
+    if request.is_ajax():
+        response = {
+            'msg': 'Configuration Uploaded! '
+        }
+        return JsonResponse(response)
+
+    collection_list = Survey_Collection.objects.all()
+
+    context = {
+        'collection_list': collection_list
+    }
+
+    return render(request, 'survey/adminPage.html', context)
+
+
+@permission_required('is_staff')
+def resultsView(request):
+    survey_collection_id = request.GET.get('survey_collection_id')
+    user_list = [User.objects.filter(id=query[0]).first() for query in
+                 Survey.objects.filter(survey_collection_id=survey_collection_id).values_list('user_id')]
+    img_collection = [img for img in Image_Collection.objects.filter(survey_collection_id=survey_collection_id)]
+    choice = [choice for choice in Choice.objects.filter(survey_collection_id=survey_collection_id)]
+    img_collection_to_choice_dict = {i: {c: 0 for c in choice} for i in img_collection}
+
+    for user in user_list:
+        for img in img_collection:
+            ans_id = Answer.objects.filter(image_collection_id=img.id, user_id=user.id)
+            if ans_id:
+                (img_collection_to_choice_dict[img])[Choice.objects.filter(id=ans_id.values_list('choice_id')
+                                                                           .first()[0]).first()] += 1
+
+    users_answer = {
+        img_coll: [
+            (user, Image_Transformation.objects.filter(user_id=user.id, image_collection_id=img_coll.id)
+             .first().applied_transformation, Answer.objects.filter(user_id=user.id, image_collection_id=img_coll.id)
+             .first().choice if Answer.objects.filter(user_id=user.id, image_collection_id=img_coll.id) else '')
+            for user in user_list
+        ] for img_coll in img_collection
+    }
+
+    context = {
+        'survey_collection_id': survey_collection_id,
+        'img_collection_to_choice_dict': {key: {k2.name: ('%.1f' % (v2 / len(user_list) * 100), v2) for k2, v2
+                                                in value.items()} for key, value
+                                          in img_collection_to_choice_dict.items()},
+        'user_list': user_list,
+        'question_list': list(list(img_collection_to_choice_dict.values())[0].keys()),
+        'users_answer': users_answer,
+        'transformations': Survey_Collection.objects.filter(id=survey_collection_id)
+        .first().transformations,
+    }
+    return render(request, 'survey/results.html', context)
+
+
+@login_required(login_url='survey:login')
+@permission_on_survey_required
+def surveyView(request):
+    # Write changes on the db
+    if request.method == 'POST':
+        Answer.objects.update_or_create(
+            image_collection_id=request.POST.get('img'),
+            user_id=request.user.id,
+            defaults={
+                'comment': request.POST.get('comment'),
+                'choice_id': request.POST.get('answer')
+            })
+        if request.is_ajax():
+            response = {
+                'msg': 'Form submitted succesfully!'
+            }
+            return JsonResponse(response)
+
+    img_id = request.GET.get('img')
+    survey_collection_id = request.GET.get('survey_collection_id')
+    user_id = request.user.id
+    survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
+    user_answers = Answer.objects.filter(user_id=user_id)
+    image = Image_Collection.objects.filter(image_id=img_id,
+                                            survey_collection_id=survey_collection_id).first()
+    # Check if unvoted checkbox is selected
+    show_only_unvoted = False
+    if request.GET.get('show_only_unvoted') == 'on':
+        show_only_unvoted = True
+
+    images_dict = get_images_dict(survey_images, user_answers, show_only_unvoted)
+    images_list = list(images_dict.keys())
+
+    prev_img = None
+    next_img = None
+
+    # Check if the current image is an unvoted image, otherwise use the first unvoted image
+    if image not in images_list:
+        image = images_list[0]
+
+    if images_list.index(image) != 0:
+        prev_img = images_list[images_list.index(image) - 1].image_id
+
+    if images_list.index(image) != len(images_list) - 1:
+        next_img = images_list[images_list.index(image) + 1].image_id
+
+    choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
+    selected_choice = Answer.objects.filter(image_collection_id=image.id,
+                                            user_id=user_id).first()
+    comment = None
+    if selected_choice is not None:
+        comment = selected_choice.comment
+
+    img_transformation = {
+        Image_Transformation.objects.filter(user_id=user_id, image_collection=img).first()
+        .image_collection_id: Image_Transformation.objects.filter(user_id=user_id, image_collection=img)
+        .first().applied_transformation for img in survey_images
+    }
+
+    context = {
+        'image': image,
+        'choices': choices,
+        'selected_choice': selected_choice,
+        'comment': comment,
+        'prev': prev_img,
+        'next': next_img,
+        'show_only_unvoted': show_only_unvoted,
+        'img_transformation': img_transformation,
+    }
+    return render(request, 'survey/survey.html', context)
+
+
+@login_required(login_url='survey:login')
+def homeView(request):
+    if request.user.is_superuser:
+        return redirect('survey:admin')
+
+    try:
+        survey_list = Survey.objects.filter(user_id=request.user.id)
+    except (KeyError, Survey.DoesNotExist):
+        survey_list = []
+
+    context = {
+        'survey_list': survey_list,
+    }
+
+    return render(request, 'survey/home.html', context)
+
+
+def get_images_dict(survey_images, user_answers, show_only_unvoted):
+    """
+    Get a dict with image id as keys and answere as values for the user given as parameter
+    :param survey_images: Image_Collection queryset
+    :param user_answers: Answers query set
+    :param show_only_unvoted: True to filter only unvoted images
+    :return: dict
+    """
+    images_dict = dict()
+    for img in survey_images:
+        images_dict[img] = None
+        for ans in user_answers:
+            if ans.image_collection_id == img.id:
+                images_dict[img] = ans
+
+    # Remove all voted images from the dict
+    img_list = list()
+    if show_only_unvoted:
+        for img, ans in images_dict.items():
+            if ans is not None:
+                img_list.append(img)
+
+        for img in img_list:
+            images_dict.pop(img)
+
+    return images_dict
+
+
+@login_required(login_url='survey:login')
+@permission_on_survey_required
+def collectionView(request):
+    # Write changes on the db
+    if request.method == 'POST':
+        if request.POST.get('img') is not None:
+            Answer.objects.update_or_create(
+                image_collection_id=request.POST.get('img'),
+                user_id=request.user.id,
+                defaults={
+                    # 'comment': request.POST.get('comment'), Insert if default comment is needed
+                    'choice_id': request.POST.get('answer')
+                })
+        if request.is_ajax():
+            response = {
+                'msg': 'Form submitted succesfully!'
+            }
+            return JsonResponse(response)
+
+    user_id = request.user.id
+    survey_collection_id = request.GET.get('survey_collection_id')
+    user_answers = Answer.objects.filter(user_id=user_id)
+    survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
+
+    # Check if unvoted checkbox is selected
+    show_only_unvoted = False
+    if request.GET.get('show_only_unvoted') == 'on':
+        show_only_unvoted = True
+
+    images_dict = get_images_dict(survey_images, user_answers, show_only_unvoted)
+
+    choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
+
+    img_transformation = {
+        Image_Transformation.objects.filter(user_id=user_id, image_collection=img).first()
+        .image_collection_id: Image_Transformation.objects.filter(user_id=user_id, image_collection=img)
+        .first().applied_transformation for img in survey_images
+    }
+
+    context = {
+        'user_answers': user_answers,
+        'survey_images': survey_images,
+        'images_dict': images_dict,
+        'show_only_unvoted': show_only_unvoted,
+        'survey_collection_id': survey_collection_id,
+        'choices': choices,
+        'img_transformation': img_transformation,
+    }
+    return render(request, 'survey/collection.html', context)
