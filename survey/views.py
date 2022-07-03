@@ -22,10 +22,24 @@ def permissionOnSurvey(request):
 
 
 def indexView(request):
+    """
+    Display the Index page of the site.
+
+    **Template:**
+
+    :template:`survey/index.html`
+    """
     return render(request, 'survey/index.html')
 
 
 def registerView(request):
+    """
+    Registration Page for creation of a new :model:`auth.User`
+
+    **Template**
+
+    :template:`survey/register.html`
+    """
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
@@ -46,6 +60,13 @@ def registerView(request):
 
 
 def loginView(request):
+    """
+    Login Page
+
+    **Template**
+
+    :template:`survey/login.html`
+    """
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -74,12 +95,28 @@ def loginView(request):
 
 
 def logoutUser(request):
+    """
+    Function doing the logout of user from the site and redirect him to :view:`survey.loginView`
+    """
     logout(request)
     return redirect('survey:login')
 
 
 @permission_required('is_staff')
 def adminView(request):
+    """
+    Display the administration panel where staff member can upload a new yaml configuration and check collection's
+    results.
+
+    **Context**
+
+    ``collection_list``
+        A list of all :model:`survey.Survey_Collection`.
+
+    **Template**
+
+    :template:`survey/admin_page.html`
+    """
     if request.method == 'POST':
         file = request.FILES['file']
         data = yaml.load(file, Loader=yaml.FullLoader)
@@ -104,11 +141,42 @@ def adminView(request):
         'collection_list': collection_list
     }
 
-    return render(request, 'survey/adminPage.html', context)
+    return render(request, 'survey/admin_page.html', context)
 
 
 @permission_required('is_staff')
 def resultsView(request):
+    """
+    Display results of :model:`survey.Survey_Collection` given its id.
+
+    **Context**
+
+    ``survey_collection_id``
+        The id field of :model:`survey.Survey_Collection`.
+
+    ``img_collection_to_choice_dict``
+        A dictionary containing an instance of :model:`survey.Survey_Collection` as key and another dictionary as value,
+        this second dictionary contains the name field of :model:`survey.Choice` related to this
+        :model:`survey.Survey_Collection` as key and a counter of how many times this choice is selected as value.
+
+    ``user_list``
+        A list of all :model:`auth.User` that can interact with this :model:`survey.Survey_Collection`.
+
+    ``choice_list``
+        A list of all :model:`survey.Choice` related to this :model:`survey.Survey_Collection`.
+
+    ``users_answer``
+        A dictionary containing :model:`survey.Image_Collection` as key and a list as value, this list contains tuples
+        formed by (id field of :model:`auth.User`, applied_transformation field of :model:`survey.Image_Transformation`
+        , an instance of :model:`survey.Choice` that represent the user's answer for this Image).
+
+    ``transformations``
+        Transformations field of :model:`survey.Survey_Collection`.
+
+    **Template**
+
+    :template:`survey/results.html`
+    """
     survey_collection_id = request.GET.get('survey_collection_id')
     user_list = [User.objects.filter(id=query[0]).first() for query in
                  Survey.objects.filter(survey_collection_id=survey_collection_id).values_list('user_id')]
@@ -138,10 +206,9 @@ def resultsView(request):
                                                 in value.items()} for key, value
                                           in img_collection_to_choice_dict.items()},
         'user_list': user_list,
-        'question_list': list(list(img_collection_to_choice_dict.values())[0].keys()),
+        'choice_list': list(list(img_collection_to_choice_dict.values())[0].keys()),
         'users_answer': users_answer,
-        'transformations': Survey_Collection.objects.filter(id=survey_collection_id)
-        .first().transformations,
+        'transformations': Survey_Collection.objects.filter(id=survey_collection_id).first().transformations,
     }
     return render(request, 'survey/results.html', context)
 

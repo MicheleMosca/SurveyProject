@@ -16,8 +16,8 @@ class Survey_Collection(models.Model):
 
 class Survey(models.Model):
     """
-    Connect a :model:`survey.survey_collection` to an :model:`auth.user`. It allow an :model:`auth.User` to interact
-    with images of the :model:`survey.survey_collection`
+    Connect a :model:`survey.Survey_Collection` to an :model:`auth.User`. It allow an :model:`auth.User` to interact
+    with images of the :model:`survey.Survey_Collection`
     """
     survey_collection = models.ForeignKey(Survey_Collection, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -51,7 +51,7 @@ class Image_Collection(models.Model):
 
 class Image_Transformation(models.Model):
     """
-    Stores the applied transformations list for the :model:`auth.user` to the :model:`survey.Image_Collection`
+    Stores the applied transformations list for the :model:`auth.User` to the :model:`survey.Image_Collection`
     """
     applied_transformation = models.CharField(max_length=200)
     image_collection = models.ForeignKey(Image_Collection, on_delete=models.CASCADE)

@@ -18,10 +18,13 @@ def encode_static_image(path, transformation=''):
 
         {% encode_static_image path [transformations] %}
 
+    Transformations must be separate by a comma
+
     Examples::
 
         {% encode_static_image 'survey/images/ISIC_0463621.jpg' %}
         {% encode_static_image 'survey/images/ISIC_0463621.jpg' 'flip,mirror,contrast(1.11)' %}
+        {% encode_static_image 'survey/images/ISIC_0463621.jpg' 'mirror' %}
 
     """
     file_path = find(path)
