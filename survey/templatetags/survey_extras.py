@@ -12,10 +12,17 @@ register = template.Library()
 @register.simple_tag
 def encode_static_image(path, transformation=''):
     """
-    Return a base64 encoded string representation of a static file image and can apply transformations to the image
-    :param path: Insert the path of the file image
-    :param transformation: List of transformations separated by ','
-    :return: Base64 encoded string
+    Return a base64 encoded string representation of a static file image and can apply transformations to the image.
+
+    Usage::
+
+        {% encode_static_image path [transformations] %}
+
+    Examples::
+
+        {% encode_static_image 'survey/images/ISIC_0463621.jpg' %}
+        {% encode_static_image 'survey/images/ISIC_0463621.jpg' 'flip,mirror,contrast(1.11)' %}
+
     """
     file_path = find(path)
     ext = file_path.split('.')[-1]
