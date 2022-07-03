@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 {% load survey_extras %}
 {% include 'survey/navbar.html' %}
 {% load static %}
@@ -42,7 +42,7 @@
                     <div class="text-center">
                         {% for key, val in img_transformation.items %}
                                 {% if key == image.id %}
-                                    <img src="{% encode_static image.image.path transformation=val %}" alt="{{ image.image.name }}" class="img-thumbnail">
+                                    <img src="{% encode_static_image image.image.path transformation=val %}" alt="{{ image.image.name }}" class="img-thumbnail">
                                 {% endif %}
                         {% endfor %}
                     </div>
