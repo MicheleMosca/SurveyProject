@@ -221,7 +221,7 @@ def surveyView(request):
     :model:`survey.Answer`.
 
     **Context**
-    
+
     ``image_collection``
         An instance of :model:`survey.Image_Collection`, to take information about :model:`survey.Image` and
         :model:`survey.Survey_Collection`
@@ -241,10 +241,15 @@ def surveyView(request):
         The id of the previous :model:`survey.Image`, is None if there isn't a previous image
 
     ``next``
+        The id of the next :model:`survey.Image`, is None if there isn't a next image
 
     ``show_only_unvoted``
+        A boolean variable to know if the user want to see only images that haven't an answer
 
     ``img_transformation``
+        A dictionary with the id of :model:`survey.Image_Image_Collection` as the key and the applied_transformations
+        field of :model:`survey.Image_Transformation` as value. It contains a list of transformations that must be
+        applied using :tag:`survey_extras-encode_static_image` tag
 
     **Template**
 
@@ -265,7 +270,7 @@ def surveyView(request):
             })
         if request.is_ajax():
             response = {
-                'msg': 'Form submitted succesfully!'
+                'msg': 'Form submitted successfully!'
             }
             return JsonResponse(response)
 
@@ -281,6 +286,8 @@ def surveyView(request):
     if request.GET.get('show_only_unvoted') == 'on':
         show_only_unvoted = True
 
+    # create a dictionary with image id as key and user answer as value, if show_only_unvoted is flagged the dictionary
+    # contains only images that haven't an answer
     images_dict = get_images_dict(survey_images, user_answers, show_only_unvoted)
     images_list = list(images_dict.keys())
 
@@ -304,6 +311,7 @@ def surveyView(request):
     if selected_choice is not None:
         comment = selected_choice.comment
 
+    # create a dictionary with image_transformation_id as the key and the applied_transformations as value
     img_transformation = {
         Image_Transformation.objects.filter(user_id=user_id, image_collection=img).first()
         .image_collection_id: Image_Transformation.objects.filter(user_id=user_id, image_collection=img)
@@ -325,6 +333,20 @@ def surveyView(request):
 
 @login_required(login_url='survey:login')
 def homeView(request):
+    """
+    Display the home view of the site, it is accessible only if the user is sign in.
+    If the user is a superuser, the site will redirect to :view:`survey.admin` view.
+
+    **Context**
+
+    ``survey_list``
+        A lst of all :model:`survey.Survey` connected to the :model:`auth.User`. It is used to extract all
+        :model:`survey.Survey_Collection` that the user is allowed to interact
+
+    **Template**
+
+    :template:`survey/home.html`
+    """
     if request.user.is_superuser:
         return redirect('survey:admin')
 
@@ -342,7 +364,7 @@ def homeView(request):
 
 def get_images_dict(survey_images, user_answers, show_only_unvoted):
     """
-    Get a dict with image id as keys and answere as values for the user given as parameter
+    Get a dict with image id as keys and answer as values for the user given as parameter
     :param survey_images: Image_Collection queryset
     :param user_answers: Answers query set
     :param show_only_unvoted: True to filter only unvoted images
@@ -370,6 +392,36 @@ def get_images_dict(survey_images, user_answers, show_only_unvoted):
 
 @login_required(login_url='survey:login')
 def collectionView(request):
+    """
+    Display all
+
+    **Context**
+
+    ``user_answers``
+
+
+    ``survey_images``
+
+
+    ``images_dict``
+
+
+    ``show_only_unvoted``
+
+
+    ``survey_collection_id``
+
+
+    ``choices``
+
+
+    ``img_transformation``
+
+
+    **Template**
+
+    :template:`survey/collection.html`
+    """
     if not permissionOnSurvey(request):
         return HttpResponseForbidden()
 
