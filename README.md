@@ -1,38 +1,39 @@
 # Survey Project
 
 ## Setup
-`python manage.py runserver 0:8000`
+Run migrate command to create the site's database:
+
+`python manage.py migrate`
+
+Now create a superuser account:
+
+`python manage.py createsuperuser`
+
+We can now run the server with this command:
+
+`python manage.py runserver 8000`
 
 ## Database Image:
-![](db_image.png)
-
-## Upcoming Features:
-- [X] User login page
-- [X] User registration page
-- [X] Administration Panel
-- [X] Results Page
-- [ ] Home page with project description
-- [X] Grid Collection Images view
-- [X] Jump to unvoted images
-- [X] Zoomed Collection Images view
-- [X] Use of Ajax for form submit
-- [X] Use of a script to create/modify collection with a YAML configuration file 
-
-### TODO List:
-- [X] Define DB structure
-- [X] Write a grid view
-- [X] Create a checkbox to visualize only unvoted images
-- [X] Create a new view to serve server with the image in base64
-- [X] Apply Image transformations with pillow and offuscate path in base64
-- [X] Create an upload image script with yaml language
-- [X] Use ajax for the management of the forms on the website
-- [X] Insert a next and previews button near the zoomed image
-- [X] Insert the checkbox to visualize only unvoted images in the zoomed image view
-- [X] Connect the Image Collection Loader script with the admin panel view
-- [X] Create a results page connected to the administration panel
+![Database Image](db_image.png)
 
 ### Database Scheme:
 This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2GqZGYSDZ8)
+
+## Features List:
+- User login page
+- User registration page
+- Administration page with link to result pages and the administrator can upload a YAML configuration to manage collections
+- A script that interpret the YAML configuration file creating or modifying collections 
+- Home page with all Survey_Collection that the user can interact
+- Survey_Collection page with all images of the collection showed as a grid and the user can make a rapid answer
+- A zoomed view of the Image with the possibly to write a short comment for the answer and move to previous and next Image
+- Use of AJAX for form submit without refreshing pages
+- An option to show only images without any answer from the user
+- Apply transformation to images with the python module Pillow
+- A script to decide which transformations must be applied based on a probability argument given by YAML configuration
+
+## How to write YAML Configuration:
+
 
 ### YAML Image Collection File Example:
 ```
