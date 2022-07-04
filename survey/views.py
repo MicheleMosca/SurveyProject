@@ -215,10 +215,46 @@ def resultsView(request):
 
 @login_required(login_url='survey:login')
 def surveyView(request):
+    """
+    Display a single Image (in a zoomed view) of the :model:`survey.Survey_Collection` given its id with a GET
+    variable and show its :model:`survey.Choice` to make the user able to make or modify an answer creating a new
+    :model:`survey.Answer`.
+
+    **Context**
+    
+    ``image_collection``
+        An instance of :model:`survey.Image_Collection`, to take information about :model:`survey.Image` and
+        :model:`survey.Survey_Collection`
+
+    ``choices``
+        An instance of :model:`survey.Choice` filtered by survey_collection_id, to take all possibly choice for this
+        :model:`survey.Image` of this :model:`survey.Survey_Collection`
+
+    ``selected_choice``
+        An instance of :model:`survey.Answer` to know which :model:`survey.Choice` the user was selected, is None if
+        the user hasn't answered yet
+
+    ``comment``
+        A String that represent the user's comment, is None if the field is empty
+
+    ``prev``
+        The id of the previous :model:`survey.Image`, is None if there isn't a previous image
+
+    ``next``
+
+    ``show_only_unvoted``
+
+    ``img_transformation``
+
+    **Template**
+
+    :template:`survey/survey.html`
+    """
+    # check if the user is able to interact with this Survey Collection
     if not permissionOnSurvey(request):
         return HttpResponseForbidden()
 
-    # Write changes on the db
+    # the user made a new answer, let's write changes on the db
     if request.method == 'POST':
         Answer.objects.update_or_create(
             image_collection_id=request.POST.get('img'),
@@ -238,7 +274,7 @@ def surveyView(request):
     user_id = request.user.id
     survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
     user_answers = Answer.objects.filter(user_id=user_id)
-    image = Image_Collection.objects.filter(image_id=img_id,
+    image_collection = Image_Collection.objects.filter(image_id=img_id,
                                             survey_collection_id=survey_collection_id).first()
     # Check if unvoted checkbox is selected
     show_only_unvoted = False
@@ -252,17 +288,17 @@ def surveyView(request):
     next_img = None
 
     # Check if the current image is an unvoted image, otherwise use the first unvoted image
-    if image not in images_list:
-        image = images_list[0]
+    if image_collection not in images_list:
+        image_collection = images_list[0]
 
-    if images_list.index(image) != 0:
-        prev_img = images_list[images_list.index(image) - 1].image_id
+    if images_list.index(image_collection) != 0:
+        prev_img = images_list[images_list.index(image_collection) - 1].image_id
 
-    if images_list.index(image) != len(images_list) - 1:
-        next_img = images_list[images_list.index(image) + 1].image_id
+    if images_list.index(image_collection) != len(images_list) - 1:
+        next_img = images_list[images_list.index(image_collection) + 1].image_id
 
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
-    selected_choice = Answer.objects.filter(image_collection_id=image.id,
+    selected_choice = Answer.objects.filter(image_collection_id=image_collection.id,
                                             user_id=user_id).first()
     comment = None
     if selected_choice is not None:
@@ -275,7 +311,7 @@ def surveyView(request):
     }
 
     context = {
-        'image': image,
+        'image_collection': image_collection,
         'choices': choices,
         'selected_choice': selected_choice,
         'comment': comment,
