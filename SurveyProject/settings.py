@@ -37,10 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'survey.apps.SurveyConfig',
-    'django_extensions',
-    'survey.templatetags.survey_extras',
     'django.contrib.admindocs',
+    'django_extensions',
+    'survey.apps.SurveyConfig',
+    'survey.templatetags.survey_extras',
 ]
 
 MIDDLEWARE = [
