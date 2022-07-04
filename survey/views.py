@@ -77,10 +77,10 @@ def loginView(request):
         if user is not None:
             login(request, user)
             if remember_me is None:
-                # if the remember me is False it will close the session after the browser is closed
+                # if remember me is False it will close the session after the browser is closed
                 request.session.set_expiry(0)
 
-            # else browser session will be ad long as the sesison cookie time "SESSION_COOKIE_AGE"
+            # else browser session will be as long as the session cookie time "SESSION_COOKIE_AGE"
             response = {
                 'msg': 'Login Success'
             }
@@ -224,32 +224,32 @@ def surveyView(request):
 
     ``image_collection``
         An instance of :model:`survey.Image_Collection`, to take information about :model:`survey.Image` and
-        :model:`survey.Survey_Collection`
+        :model:`survey.Survey_Collection`.
 
     ``choices``
         An instance of :model:`survey.Choice` filtered by survey_collection_id, to take all possibly choice for this
-        :model:`survey.Image` of this :model:`survey.Survey_Collection`
+        :model:`survey.Image` of this :model:`survey.Survey_Collection`.
 
     ``selected_choice``
         An instance of :model:`survey.Answer` to know which :model:`survey.Choice` the user was selected, is None if
-        the user hasn't answered yet
+        the user hasn't answered yet.
 
     ``comment``
-        A String that represent the user's comment, is None if the field is empty
+        A String that represent the user's comment, is None if the field is empty.
 
     ``prev``
-        The id of the previous :model:`survey.Image`, is None if there isn't a previous image
+        The id of the previous :model:`survey.Image`, is None if there isn't a previous image.
 
     ``next``
-        The id of the next :model:`survey.Image`, is None if there isn't a next image
+        The id of the next :model:`survey.Image`, is None if there isn't a next image.
 
     ``show_only_unvoted``
-        A boolean variable to know if the user want to see only images that haven't an answer
+        A boolean variable to know if the user want to see only images that haven't an answer.
 
     ``img_transformation``
         A dictionary with the id of :model:`survey.Image_Image_Collection` as the key and the applied_transformations
         field of :model:`survey.Image_Transformation` as value. It contains a list of transformations that must be
-        applied using :tag:`survey_extras-encode_static_image` tag
+        applied using :tag:`survey_extras-encode_static_image` tag.
 
     **Template**
 
@@ -341,7 +341,7 @@ def homeView(request):
 
     ``survey_list``
         A lst of all :model:`survey.Survey` connected to the :model:`auth.User`. It is used to extract all
-        :model:`survey.Survey_Collection` that the user is allowed to interact
+        :model:`survey.Survey_Collection` that the user is allowed to interact.
 
     **Template**
 
@@ -393,30 +393,29 @@ def get_images_dict(survey_images, user_answers, show_only_unvoted):
 @login_required(login_url='survey:login')
 def collectionView(request):
     """
-    Display all
+    Display all :model:`survey.Image_Collection` images of the :model:`survey.Survey_Collection` where the id of
+    Survey_Collection is given by a GET variable. In this page is possible make or change an answer for every images.
 
     **Context**
 
-    ``user_answers``
-
-
-    ``survey_images``
-
-
     ``images_dict``
-
+        A dictionary created with :model:`survey.Image` id as key and :model:`survey.Answer` of the user as value.
+        If show_only_unvoted is flagged the dictionary contains only images that haven't an answer.
 
     ``show_only_unvoted``
-
+        A boolean variable to know if the user want to see only images that haven't an answer.
 
     ``survey_collection_id``
-
+        The id field of :model:`survey.Survey_Collection`.
 
     ``choices``
-
+        An instance of :model:`survey.Choice` filtered by survey_collection_id, to take all possibly choice for this
+        :model:`survey.Image` of this :model:`survey.Survey_Collection`.
 
     ``img_transformation``
-
+        A dictionary with the id of :model:`survey.Image_Image_Collection` as the key and the applied_transformations
+        field of :model:`survey.Image_Transformation` as value. It contains a list of transformations that must be
+        applied using :tag:`survey_extras-encode_static_image` tag.
 
     **Template**
 
@@ -437,7 +436,7 @@ def collectionView(request):
                 })
         if request.is_ajax():
             response = {
-                'msg': 'Form submitted succesfully!'
+                'msg': 'Form submitted successfully!'
             }
             return JsonResponse(response)
 
@@ -451,10 +450,13 @@ def collectionView(request):
     if request.GET.get('show_only_unvoted') == 'on':
         show_only_unvoted = True
 
+    # create a dictionary with image id as key and user answer as value, if show_only_unvoted is flagged the dictionary
+    # contains only images that haven't an answer
     images_dict = get_images_dict(survey_images, user_answers, show_only_unvoted)
 
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
 
+    # create a dictionary with image_transformation_id as the key and the applied_transformations as value
     img_transformation = {
         Image_Transformation.objects.filter(user_id=user_id, image_collection=img).first()
         .image_collection_id: Image_Transformation.objects.filter(user_id=user_id, image_collection=img)
@@ -462,8 +464,6 @@ def collectionView(request):
     }
 
     context = {
-        'user_answers': user_answers,
-        'survey_images': survey_images,
         'images_dict': images_dict,
         'show_only_unvoted': show_only_unvoted,
         'survey_collection_id': survey_collection_id,
