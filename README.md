@@ -9,17 +9,17 @@ Now create a superuser account:
 
 `python manage.py createsuperuser`
 
-We can now run the server with this command:
+Now run the server with this command:
 
 `python manage.py runserver 8000`
 
-## Database Image:
+## Database Scheme Image
 ![Database Image](db_image.png)
 
-### Database Scheme:
+### Database Scheme
 This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2GqZGYSDZ8)
 
-## Features List:
+## Features List
 - User login page
 - User registration page
 - Administration page with link to result pages and the administrator can upload a YAML configuration to manage collections
@@ -32,14 +32,45 @@ This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2Gq
 - Apply transformation to images with the python module Pillow
 - A script to decide which transformations must be applied based on a probability argument given by YAML configuration
 
-## How to write YAML Configuration:
+## How to write YAML Configuration File
+Create a file with .yaml extension and start to define a new collection with the collection tag:
+
+`collection:`
+
+To describe a collection there are six different tags:
+
+- `id: NUMBER`
+    With this tag you can specify the id of the collection, is used ONLY if you want to modify an existing collection by adding new images, choices, users or to modify the collection's description
+
+- `description: "DESCRIPTION"`
+    Here you can write a short description of the collection
+
+- `transformations: ['TRANSFORMATION(PROBABILITY)', 'TRANSFORMATION(PROBABILITY)']`
+    With this tag you can specify a list of transformations that can be applied. Just need to write a valid transformation (for now valid transformation are: 'flip', 'mirror' and 'contrast') and write between round brackets the probability that the transformation can be applied for each user can interact with the collection.
+
+- `images:`
+    Here you can add images to collection by specify the file's path and an optional image name. If the name field is not writen the default name is the filename without extension.
+    
+    ```
+    -   path: "IMAGE_FILE_PATH"
+        name: "IMAGE_NAME"
+    ```
+
+- `choices:`
+    Write all possibly answer option for images of the collection. Users can choose only one option for each image.
+    
+  NOTE: At least one option must be written for each collection
+
+    `-   name: "OPTION1"`
 
 
-### YAML Image Collection File Example:
+- `users: ['USERNAME_USER1','USERNAME_USER2']`
+    
+    
+### YAML Image Collection File Example
 ```
-# Definition of a new image collection
 collection:
-    id: 1                                               # Insert id if you want to add something to an existing collection
+    id: 1                                               # Insert id only if you want to add something to an existing collection
     description: "Description of the collection"
     transformations: ['flip(0.5)', 'mirror(0.5)', 'contrast(0.2)']  # Write transformation that can be applied with its probability
 
