@@ -60,8 +60,8 @@ To describe a collection there are six different tags:
 
 - `choices:`
     Write all possibly answer option for images of the collection. Users can choose only one option for each image.
-    
-  NOTE: At least one option must be written for each collection
+
+    NOTE: At least one option must be written for each collection
 
     `-   name: "OPTION1"`
 
@@ -70,7 +70,7 @@ To describe a collection there are six different tags:
     Specify a list of users that can interact with the collection
     
 ### YAML Image Collection File Examples
-Creation of a new Collection:
+Creation of a new collection:
 ```
 collection:
     description: "Description of the collection"
