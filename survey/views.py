@@ -8,28 +8,38 @@ from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection,
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
 
 
-def permission_on_survey_required(f):
+def permissionOnSurvey(request):
     """
-    Decorator fuction to check if the user is allowed to interact with the current survey collection
-    :param f: view function
-    :return: the view function or HttpResponseForbidden()
+    Check if user is authorized to interact with this collection
+    :param request:
+    :return: True if user is authorized, False otherwise
     """
-
-    def checkPermissionOnSurvey(request):
-        user_id = request.user.id
-        survey_collection_id = request.GET.get('survey_collection_id')
-        if not Survey.objects.filter(user_id=user_id, survey_collection_id=survey_collection_id):
-            return HttpResponseForbidden()
-        return f(request)
-
-    return checkPermissionOnSurvey
+    user_id = request.user.id
+    survey_collection_id = request.GET.get('survey_collection_id')
+    if not Survey.objects.filter(user_id=user_id, survey_collection_id=survey_collection_id):
+        return False
+    return True
 
 
 def indexView(request):
+    """
+    Display the Index page of the site.
+
+    **Template:**
+
+    :template:`survey/index.html`
+    """
     return render(request, 'survey/index.html')
 
 
 def registerView(request):
+    """
+    Registration Page for creation of a new :model:`auth.User`
+
+    **Template**
+
+    :template:`survey/register.html`
+    """
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
@@ -50,6 +60,13 @@ def registerView(request):
 
 
 def loginView(request):
+    """
+    Login Page
+
+    **Template**
+
+    :template:`survey/login.html`
+    """
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -60,10 +77,10 @@ def loginView(request):
         if user is not None:
             login(request, user)
             if remember_me is None:
-                # if the remember me is False it will close the session after the browser is closed
+                # if remember me is False it will close the session after the browser is closed
                 request.session.set_expiry(0)
 
-            # else browser session will be ad long as the sesison cookie time "SESSION_COOKIE_AGE"
+            # else browser session will be as long as the session cookie time "SESSION_COOKIE_AGE"
             response = {
                 'msg': 'Login Success'
             }
@@ -78,12 +95,28 @@ def loginView(request):
 
 
 def logoutUser(request):
+    """
+    Function doing the logout of user from the site and redirect him to :view:`survey.loginView`
+    """
     logout(request)
     return redirect('survey:login')
 
 
 @permission_required('is_staff')
 def adminView(request):
+    """
+    Display the administration panel where staff member can upload a new yaml configuration and check collection's
+    results.
+
+    **Context**
+
+    ``collection_list``
+        A list of all :model:`survey.Survey_Collection`.
+
+    **Template**
+
+    :template:`survey/admin_page.html`
+    """
     if request.method == 'POST':
         file = request.FILES['file']
         data = yaml.load(file, Loader=yaml.FullLoader)
@@ -108,11 +141,42 @@ def adminView(request):
         'collection_list': collection_list
     }
 
-    return render(request, 'survey/adminPage.html', context)
+    return render(request, 'survey/admin_page.html', context)
 
 
 @permission_required('is_staff')
 def resultsView(request):
+    """
+    Display results of :model:`survey.Survey_Collection` given its id.
+
+    **Context**
+
+    ``survey_collection_id``
+        The id field of :model:`survey.Survey_Collection`.
+
+    ``img_collection_to_choice_dict``
+        A dictionary containing an instance of :model:`survey.Survey_Collection` as key and another dictionary as value,
+        this second dictionary contains the name field of :model:`survey.Choice` related to this
+        :model:`survey.Survey_Collection` as key and a counter of how many times this choice is selected as value.
+
+    ``user_list``
+        A list of all :model:`auth.User` that can interact with this :model:`survey.Survey_Collection`.
+
+    ``choice_list``
+        A list of all :model:`survey.Choice` related to this :model:`survey.Survey_Collection`.
+
+    ``users_answer``
+        A dictionary containing :model:`survey.Image_Collection` as key and a list as value, this list contains tuples
+        formed by (id field of :model:`auth.User`, applied_transformation field of :model:`survey.Image_Transformation`
+        , an instance of :model:`survey.Choice` that represent the user's answer for this Image).
+
+    ``transformations``
+        Transformations field of :model:`survey.Survey_Collection`.
+
+    **Template**
+
+    :template:`survey/results.html`
+    """
     survey_collection_id = request.GET.get('survey_collection_id')
     user_list = [User.objects.filter(id=query[0]).first() for query in
                  Survey.objects.filter(survey_collection_id=survey_collection_id).values_list('user_id')]
@@ -142,18 +206,60 @@ def resultsView(request):
                                                 in value.items()} for key, value
                                           in img_collection_to_choice_dict.items()},
         'user_list': user_list,
-        'question_list': list(list(img_collection_to_choice_dict.values())[0].keys()),
+        'choice_list': list(list(img_collection_to_choice_dict.values())[0].keys()),
         'users_answer': users_answer,
-        'transformations': Survey_Collection.objects.filter(id=survey_collection_id)
-        .first().transformations,
+        'transformations': Survey_Collection.objects.filter(id=survey_collection_id).first().transformations,
     }
     return render(request, 'survey/results.html', context)
 
 
 @login_required(login_url='survey:login')
-@permission_on_survey_required
 def surveyView(request):
-    # Write changes on the db
+    """
+    Display a single Image (in a zoomed view) of the :model:`survey.Survey_Collection` given its id with a GET
+    variable and show its :model:`survey.Choice` to make the user able to make or modify an answer creating a new
+    :model:`survey.Answer`.
+
+    **Context**
+
+    ``image_collection``
+        An instance of :model:`survey.Image_Collection`, to take information about :model:`survey.Image` and
+        :model:`survey.Survey_Collection`.
+
+    ``choices``
+        An instance of :model:`survey.Choice` filtered by survey_collection_id, to take all possibly choice for this
+        :model:`survey.Image` of this :model:`survey.Survey_Collection`.
+
+    ``selected_choice``
+        An instance of :model:`survey.Answer` to know which :model:`survey.Choice` the user was selected, is None if
+        the user hasn't answered yet.
+
+    ``comment``
+        A String that represent the user's comment, is None if the field is empty.
+
+    ``prev``
+        The id of the previous :model:`survey.Image`, is None if there isn't a previous image.
+
+    ``next``
+        The id of the next :model:`survey.Image`, is None if there isn't a next image.
+
+    ``show_only_unvoted``
+        A boolean variable to know if the user want to see only images that haven't an answer.
+
+    ``img_transformation``
+        A dictionary with the id of :model:`survey.Image_Image_Collection` as the key and the applied_transformations
+        field of :model:`survey.Image_Transformation` as value. It contains a list of transformations that must be
+        applied using :tag:`survey_extras-encode_static_image` tag.
+
+    **Template**
+
+    :template:`survey/survey.html`
+    """
+    # check if the user is able to interact with this Survey Collection
+    if not permissionOnSurvey(request):
+        return HttpResponseForbidden()
+
+    # the user made a new answer, let's write changes on the db
     if request.method == 'POST':
         Answer.objects.update_or_create(
             image_collection_id=request.POST.get('img'),
@@ -164,7 +270,7 @@ def surveyView(request):
             })
         if request.is_ajax():
             response = {
-                'msg': 'Form submitted succesfully!'
+                'msg': 'Form submitted successfully!'
             }
             return JsonResponse(response)
 
@@ -173,13 +279,16 @@ def surveyView(request):
     user_id = request.user.id
     survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
     user_answers = Answer.objects.filter(user_id=user_id)
-    image = Image_Collection.objects.filter(image_id=img_id,
-                                            survey_collection_id=survey_collection_id).first()
+    image_collection = Image_Collection.objects.filter(image_id=img_id,
+                                                       survey_collection_id=survey_collection_id).first()
+
     # Check if unvoted checkbox is selected
     show_only_unvoted = False
     if request.GET.get('show_only_unvoted') == 'on':
         show_only_unvoted = True
 
+    # create a dictionary with image id as key and user answer as value, if show_only_unvoted is flagged the dictionary
+    # contains only images that haven't an answer
     images_dict = get_images_dict(survey_images, user_answers, show_only_unvoted)
     images_list = list(images_dict.keys())
 
@@ -187,22 +296,23 @@ def surveyView(request):
     next_img = None
 
     # Check if the current image is an unvoted image, otherwise use the first unvoted image
-    if image not in images_list:
-        image = images_list[0]
+    if image_collection not in images_list:
+        image_collection = images_list[0]
 
-    if images_list.index(image) != 0:
-        prev_img = images_list[images_list.index(image) - 1].image_id
+    if images_list.index(image_collection) != 0:
+        prev_img = images_list[images_list.index(image_collection) - 1].image_id
 
-    if images_list.index(image) != len(images_list) - 1:
-        next_img = images_list[images_list.index(image) + 1].image_id
+    if images_list.index(image_collection) != len(images_list) - 1:
+        next_img = images_list[images_list.index(image_collection) + 1].image_id
 
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
-    selected_choice = Answer.objects.filter(image_collection_id=image.id,
+    selected_choice = Answer.objects.filter(image_collection_id=image_collection.id,
                                             user_id=user_id).first()
     comment = None
     if selected_choice is not None:
         comment = selected_choice.comment
 
+    # create a dictionary with image_transformation_id as the key and the applied_transformations as value
     img_transformation = {
         Image_Transformation.objects.filter(user_id=user_id, image_collection=img).first()
         .image_collection_id: Image_Transformation.objects.filter(user_id=user_id, image_collection=img)
@@ -210,7 +320,7 @@ def surveyView(request):
     }
 
     context = {
-        'image': image,
+        'image_collection': image_collection,
         'choices': choices,
         'selected_choice': selected_choice,
         'comment': comment,
@@ -224,6 +334,20 @@ def surveyView(request):
 
 @login_required(login_url='survey:login')
 def homeView(request):
+    """
+    Display the home view of the site, it is accessible only if the user is sign in.
+    If the user is a superuser, the site will redirect to :view:`survey.admin` view.
+
+    **Context**
+
+    ``survey_list``
+        A lst of all :model:`survey.Survey` connected to the :model:`auth.User`. It is used to extract all
+        :model:`survey.Survey_Collection` that the user is allowed to interact.
+
+    **Template**
+
+    :template:`survey/home.html`
+    """
     if request.user.is_superuser:
         return redirect('survey:admin')
 
@@ -241,7 +365,7 @@ def homeView(request):
 
 def get_images_dict(survey_images, user_answers, show_only_unvoted):
     """
-    Get a dict with image id as keys and answere as values for the user given as parameter
+    Get a dict with image id as keys and answer as values for the user given as parameter
     :param survey_images: Image_Collection queryset
     :param user_answers: Answers query set
     :param show_only_unvoted: True to filter only unvoted images
@@ -268,8 +392,39 @@ def get_images_dict(survey_images, user_answers, show_only_unvoted):
 
 
 @login_required(login_url='survey:login')
-@permission_on_survey_required
 def collectionView(request):
+    """
+    Display all :model:`survey.Image_Collection` images of the :model:`survey.Survey_Collection` where the id of
+    Survey_Collection is given by a GET variable. In this page is possible make or change an answer for every images.
+
+    **Context**
+
+    ``images_dict``
+        A dictionary created with :model:`survey.Image` id as key and :model:`survey.Answer` of the user as value.
+        If show_only_unvoted is flagged the dictionary contains only images that haven't an answer.
+
+    ``show_only_unvoted``
+        A boolean variable to know if the user want to see only images that haven't an answer.
+
+    ``survey_collection_id``
+        The id field of :model:`survey.Survey_Collection`.
+
+    ``choices``
+        An instance of :model:`survey.Choice` filtered by survey_collection_id, to take all possibly choice for this
+        :model:`survey.Image` of this :model:`survey.Survey_Collection`.
+
+    ``img_transformation``
+        A dictionary with the id of :model:`survey.Image_Image_Collection` as the key and the applied_transformations
+        field of :model:`survey.Image_Transformation` as value. It contains a list of transformations that must be
+        applied using :tag:`survey_extras-encode_static_image` tag.
+
+    **Template**
+
+    :template:`survey/collection.html`
+    """
+    if not permissionOnSurvey(request):
+        return HttpResponseForbidden()
+
     # Write changes on the db
     if request.method == 'POST':
         if request.POST.get('img') is not None:
@@ -282,7 +437,7 @@ def collectionView(request):
                 })
         if request.is_ajax():
             response = {
-                'msg': 'Form submitted succesfully!'
+                'msg': 'Form submitted successfully!'
             }
             return JsonResponse(response)
 
@@ -296,10 +451,13 @@ def collectionView(request):
     if request.GET.get('show_only_unvoted') == 'on':
         show_only_unvoted = True
 
+    # create a dictionary with image id as key and user answer as value, if show_only_unvoted is flagged the dictionary
+    # contains only images that haven't an answer
     images_dict = get_images_dict(survey_images, user_answers, show_only_unvoted)
 
     choices = Choice.objects.filter(survey_collection_id=survey_collection_id)
 
+    # create a dictionary with image_transformation_id as the key and the applied_transformations as value
     img_transformation = {
         Image_Transformation.objects.filter(user_id=user_id, image_collection=img).first()
         .image_collection_id: Image_Transformation.objects.filter(user_id=user_id, image_collection=img)
@@ -307,8 +465,6 @@ def collectionView(request):
     }
 
     context = {
-        'user_answers': user_answers,
-        'survey_images': survey_images,
         'images_dict': images_dict,
         'show_only_unvoted': show_only_unvoted,
         'survey_collection_id': survey_collection_id,

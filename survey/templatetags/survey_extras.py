@@ -1,7 +1,5 @@
 import base64
 import io
-import random
-
 from django import template
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.finders import find
@@ -12,13 +10,22 @@ register = template.Library()
 
 @login_required(login_url='survey:login')
 @register.simple_tag
-def encode_static(path, encoding='base64', file_type='image', transformation=''):
+def encode_static_image(path, transformation=''):
     """
-        a template tag that returns a encoded string representation of a staticfile
-        Usage::
-            {% encode_static path [encoding] %}
-        Examples::
-            <img src="{% encode_static 'path/to/img.png' %}">
+    Return a base64 encoded string representation of a static file image and can apply transformations to the image.
+
+    Usage::
+
+        {% encode_static_image path [transformations] %}
+
+    Transformations must be separate by a comma
+
+    Examples::
+
+        {% encode_static_image 'survey/images/ISIC_0463621.jpg' %}
+        {% encode_static_image 'survey/images/ISIC_0463621.jpg' 'flip,mirror,contrast(1.11)' %}
+        {% encode_static_image 'survey/images/ISIC_0463621.jpg' 'mirror' %}
+
     """
     file_path = find(path)
     ext = file_path.split('.')[-1]
@@ -26,6 +33,7 @@ def encode_static(path, encoding='base64', file_type='image', transformation='')
 
     img = Image.open(file_path)
 
+    # Write here the Pillow code to every valid transformation
     for tr in transformation_list:
         if tr == 'flip':
             img = ImageOps.flip(img)
@@ -33,7 +41,6 @@ def encode_static(path, encoding='base64', file_type='image', transformation='')
             img = ImageOps.mirror(img)
         if 'contrast' in tr:
             enhancer = ImageEnhance.Contrast(img)
-            # factor = random.uniform(0.5, 1.5)
             factor = float(tr.split('(')[1].split(')')[0])
             img = enhancer.enhance(factor)
 
@@ -42,4 +49,4 @@ def encode_static(path, encoding='base64', file_type='image', transformation='')
     img_byte_arr = img_byte_arr.getvalue()
     file_str = base64.b64encode(img_byte_arr).decode('utf-8')
 
-    return f"data:{file_type}/{ext};{encoding},{file_str}"
+    return f"data:image/{ext};base64,{file_str}"

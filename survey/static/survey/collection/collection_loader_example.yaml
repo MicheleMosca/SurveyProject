@@ -2,7 +2,7 @@
 collection:
     id: 1                                               # Insert id if you want to add something to an existing collection
     description: "Description of the collection"
-    transformations: ['flip(0.5)', 'mirror(0.5)', 'contrast(0.2)']
+    transformations: ['flip(0.5)', 'mirror(0.5)', 'contrast(0.2)']  # Write transformation that can be applied with its probability
 
     images:
         -   path: "survey/images/image1.jpg"

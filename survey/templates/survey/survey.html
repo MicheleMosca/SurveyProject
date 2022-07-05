@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 {% load survey_extras %}
 {% include 'survey/navbar.html' %}
 {% load static %}
 
-<h1 class="text-center"> {{ image.image.name }} </h1>
+<head>
+    <title>{{ image_collection.image.name }}</title>
+</head>
+
+<h1 class="text-center"> {{ image_collection.image.name }} </h1>
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -14,8 +18,8 @@
 <body>
     <div class="form-check form-switch mb-3 mx-4 py-3">
         <form method="get" action="">
-            <input type="hidden" name="img" value="{{ image.image_id }}">
-            <input type="hidden" name="survey_collection_id" value="{{ image.survey_collection_id }}">
+            <input type="hidden" name="img" value="{{ image_collection.image_id }}">
+            <input type="hidden" name="survey_collection_id" value="{{ image_collection.survey_collection_id }}">
             <input class="form-check-input" type="checkbox" name="show_only_unvoted" id="show_only_unvoted" onchange="this.form.submit()" {% if show_only_unvoted == True %} checked {% endif %}>
             <label class="form-check-label" for="show_only_unvoted">Only Unvoted</label>
         </form>
@@ -31,7 +35,7 @@
                             {% if show_only_unvoted == True %}
                                 <input type="hidden" name="show_only_unvoted" value="on">
                             {% endif %}
-                            <input type="hidden" name="survey_collection_id" value="{{ image.survey_collection_id }}">
+                            <input type="hidden" name="survey_collection_id" value="{{ image_collection.survey_collection_id }}">
                             <button type="submit" class="btn btn-primary btn-floating btn-lg" {% if prev == None %} disabled {% endif %}>
                                 <i class="bi-chevron-left" style="font-size: 2rem; color: white;"></i>
                             </button>
@@ -41,8 +45,8 @@
                 <div class="col-lg">
                     <div class="text-center">
                         {% for key, val in img_transformation.items %}
-                                {% if key == image.id %}
-                                    <img src="{% encode_static image.image.path transformation=val %}" alt="{{ image.image.name }}" class="img-thumbnail">
+                                {% if key == image_collection.id %}
+                                    <img src="{% encode_static_image image_collection.image.path transformation=val %}" alt="{{ image_collection.image.name }}" class="img-thumbnail">
                                 {% endif %}
                         {% endfor %}
                     </div>
@@ -60,10 +64,10 @@
                         {% endfor %}
                         <label class="text-start pt-4" for="comment">Comment (optional):</label>
                         <textarea class="form-control pt-1" rows="5" cols="70" name="comment" id="comment">{% if comment %} {{ comment }} {% endif %}</textarea>
-                        <input type="hidden" name="img" value="{{ image.id }}">
-                        <input type="hidden" name="survey_collection_id" value="{{ image.survey_collection_id }}">
+                        <input type="hidden" name="img" value="{{ image_collection.id }}">
+                        <input type="hidden" name="survey_collection_id" value="{{ image_collection.survey_collection_id }}">
                         <div class="container pt-3">
-                            <a class="btn btn-primary" href="{% url 'survey:collection' %}?survey_collection_id={{ image.survey_collection_id }}{% if show_only_unvoted == True %}&show_only_unvoted=on{% endif %}" >Back</a>
+                            <a class="btn btn-primary" href="{% url 'survey:collection' %}?survey_collection_id={{ image_collection.survey_collection_id }}{% if show_only_unvoted == True %}&show_only_unvoted=on{% endif %}" >Back</a>
                             <input class="btn btn-primary mx-5" type="submit" name="Send Answer" value="Send">
                         </div>
                     </form>
@@ -75,7 +79,7 @@
                             {% if show_only_unvoted == True %}
                                 <input type="hidden" name="show_only_unvoted" value="on">
                             {% endif %}
-                            <input type="hidden" name="survey_collection_id" value="{{ image.survey_collection_id }}">
+                            <input type="hidden" name="survey_collection_id" value="{{ image_collection.survey_collection_id }}">
                             <button type="submit" class="btn btn-primary btn-floating btn-lg" {% if next == None %} disabled {% endif %}>
                                 <i class="bi-chevron-right" style="font-size: 2rem; color: white;"></i>
                             </button>
