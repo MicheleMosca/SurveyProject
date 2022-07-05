@@ -2,7 +2,7 @@ from survey.models import Image, Survey_Collection, Image_Collection, User, Surv
 import yaml
 import random
 
-# Usage:
+# Usage for a command line execution:
 # python manage.py runscript image_collection_loader --script-args survey/static/survey/collection/new_collection.yaml
 
 errorMsg = {
@@ -14,10 +14,23 @@ errorMsg = {
 
 
 def decision(probability):
+    """
+    Make a decision from a probability parameter given in input
+    :param probability: Float number representing the probability
+    :return: True if the random number is lower than probability number given in input, False otherwise
+    """
     return random.random() < probability
 
 
 def apply_transformations(image_transformation, transformations, user_id):
+    """
+    Calculate which transformation will be applied to the user given in input and write the list of transformations
+    on the database
+    :param image_transformation: instance of :model:`survey.Image_Transformation`
+    :param transformations: String with the list of transformation separated by comma
+    :param user_id: id of user whose want to calculate transformations
+    :return: None
+    """
     image_transformation.applied_transformation = ''
     for transformation in transformations.split(','):
         probability = float(transformation.split('(')[1].split(')')[0])
@@ -39,6 +52,12 @@ def apply_transformations(image_transformation, transformations, user_id):
 
 
 def add_images(images, collection_object):
+    """
+    Write image's information on the database and connect it to the corresponding Survey Collection
+    :param images: A list of dictionary containing information about new images
+    :param collection_object: An instance of :model:`survey.Survey_Collection`
+    :return: None
+    """
     for img in images:
         path = img['path']
         name = img.get('name', (path.split('/')[-1]).split('.')[0])
@@ -65,6 +84,12 @@ def add_images(images, collection_object):
 
 
 def add_users(users, collection_object):
+    """
+    Write new user on database
+    :param users: A list of username
+    :param collection_object: An instance of :model:`survey.Survey_Collection`
+    :return: None
+    """
     print(f"Adding new Users: {users}")
     for user in users:
         user_object = User.objects.filter(username=user).first()
@@ -81,6 +106,12 @@ def add_users(users, collection_object):
 
 
 def add_choices(choices, collection_object):
+    """
+    Write choices on the database
+    :param choices: A list of choices
+    :param collection_object: An instance of :model:`survey.Survey_Collection`
+    :return: None or a specific error code
+    """
     print(f"Choices: {choices}")
     for choice in choices:
         name = choice.get('name')
@@ -94,6 +125,12 @@ def add_choices(choices, collection_object):
 
 
 def add_transformations(transformations, collection_object):
+    """
+    Write possibly transformations on the Survey Collection as a Transformations field
+    :param transformations: List of transformations
+    :param collection_object: An instance of :model:`survey.Survey_Collection`
+    :return: None
+    """
     print(f"Transformations: {transformations}")
     transformation_field = transformations[0]
     for transformation in transformations[1:]:
@@ -104,6 +141,11 @@ def add_transformations(transformations, collection_object):
 
 
 def create_or_modify_collections(data):
+    """
+    Function to create or modify collections by giving a yaml data object
+    :param data: An yaml object obtained by yaml.load function
+    :return: 0 if the function found no errors, otherwise return a specific error code
+    """
     collection = data.get('collection')
     if collection is None:
         print(f"Error: {errorMsg[3]}")
@@ -151,6 +193,11 @@ def create_or_modify_collections(data):
 
 
 def run(*args):
+    """
+    This function is called by runscript command of manage.py to upload a YAML Configuration File by command line
+    :param args: Arguments of the function, args[0] must contain the path of YAML Configuration File
+    :return: :func:`create_or_modify_collections`
+    """
     if len(args) != 1:
         print(f"Error: {errorMsg[1]}")
         return 1

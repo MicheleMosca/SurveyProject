@@ -6,7 +6,7 @@ Run migrate command to create the site's database:
 
 `python manage.py migrate`
 
-Create an Admin account to have the access to the Administration Panel:
+Create an Admin account to have access to the Administration Panel:
 
 `python manage.py createsuperuser`
 
