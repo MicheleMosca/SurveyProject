@@ -280,7 +280,8 @@ def surveyView(request):
     survey_images = Image_Collection.objects.filter(survey_collection_id=survey_collection_id)
     user_answers = Answer.objects.filter(user_id=user_id)
     image_collection = Image_Collection.objects.filter(image_id=img_id,
-                                            survey_collection_id=survey_collection_id).first()
+                                                       survey_collection_id=survey_collection_id).first()
+
     # Check if unvoted checkbox is selected
     show_only_unvoted = False
     if request.GET.get('show_only_unvoted') == 'on':
