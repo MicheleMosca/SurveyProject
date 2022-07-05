@@ -5,13 +5,15 @@ Run migrate command to create the site's database:
 
 `python manage.py migrate`
 
-Now create a superuser account:
+Create an Admin account to have the access to the Administration Panel:
 
 `python manage.py createsuperuser`
 
-Now run the server with this command:
+Run the server with this command:
 
 `python manage.py runserver 8000`
+
+The site is now online, you can log in with admin credentials and upload YAML Configuration Files to create new collections
 
 ## Database Scheme Image
 ![Database Image](db_image.png)
@@ -65,12 +67,12 @@ To describe a collection there are six different tags:
 
 
 - `users: ['USERNAME_USER1','USERNAME_USER2']`
+    Specify a list of users that can interact with the collection
     
-    
-### YAML Image Collection File Example
+### YAML Image Collection File Examples
+Creation of a new Collection:
 ```
 collection:
-    id: 1                                               # Insert id only if you want to add something to an existing collection
     description: "Description of the collection"
     transformations: ['flip(0.5)', 'mirror(0.5)', 'contrast(0.2)']  # Write transformation that can be applied with its probability
 
@@ -86,5 +88,18 @@ collection:
         -   name: "Collection1_Option3"
         -   name: "Collection1_Option4"
 
-    users: ['prova1', 'prova2']                         # list new users who will get the access to the collection
+    users: ['user1', 'user2']                         # list new users who will get the access to the collection
 ```
+
+Modify the collection with id=1 changing the description, adding a new image and a new user:
+```
+collection:
+    id: 1                                               # Insert id only if you want to add something to an existing collection
+    description: "Description of the collection modified"
+
+    images:
+        -   path: "survey/images/image4.jpg"
+
+    users: ['user3']                         # list new users who will get the access to the collection
+```
+
