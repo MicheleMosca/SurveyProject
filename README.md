@@ -1,4 +1,5 @@
 # Survey Project
+This site has the purpose of creating surveys on image collections. It allows users, typically dermatologists, to make a diagnosis for a collection of images representing skin diseases   
 
 ## Setup
 Run migrate command to create the site's database:
@@ -49,6 +50,8 @@ To describe a collection there are six different tags:
 
 - `transformations: ['TRANSFORMATION(PROBABILITY)', 'TRANSFORMATION(PROBABILITY)']`
     With this tag you can specify a list of transformations that can be applied. Just need to write a valid transformation (for now valid transformation are: 'flip', 'mirror' and 'contrast') and write between round brackets the probability that the transformation can be applied for each user can interact with the collection.
+
+    NOTE: If you want to add new transformations, need to write the Pillow corresponding code in [survey_extras.py](survey/templatetags/survey_extras.py) script and if the transformation contains any parameter need to specify it in [image_collection_loader.py](survey/scripts/image_collection_loader.py) script. (For example: contrast transformation require a factor parameter. It is written in the script)
 
 - `images:`
     Here you can add images to collection by specify the file's path and an optional image name. If the name field is not writen the default name is the filename without extension.

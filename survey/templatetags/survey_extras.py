@@ -33,6 +33,7 @@ def encode_static_image(path, transformation=''):
 
     img = Image.open(file_path)
 
+    # Write here the Pillow code to every valid transformation
     for tr in transformation_list:
         if tr == 'flip':
             img = ImageOps.flip(img)

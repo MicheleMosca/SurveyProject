@@ -23,7 +23,9 @@ def apply_transformations(image_transformation, transformations, user_id):
         probability = float(transformation.split('(')[1].split(')')[0])
         transformation = transformation.split('(')[0]
         if decision(probability):
+            # Write here transformation parameter if required
             if transformation == 'contrast':
+                # Setting the factor parameter in a (0.5, 1.5) threshold
                 factor = "%.2f" % random.uniform(0.5, 1.5)
                 transformation += f'({factor})'
 
@@ -32,7 +34,7 @@ def apply_transformations(image_transformation, transformations, user_id):
             else:
                 image_transformation.applied_transformation += ',' + transformation
 
-    print(f"User_id: {user_id} Applied Trasnformations: {image_transformation.applied_transformation}")
+    print(f"User_id: {user_id} Applied Transformations: {image_transformation.applied_transformation}")
     image_transformation.save()
 
 
@@ -76,7 +78,6 @@ def add_users(users, collection_object):
                 image_transformation = Image_Transformation.objects.update_or_create(
                     user_id=user_object.id, image_collection_id=img_collection_id)[0]
                 apply_transformations(image_transformation, collection_object.transformations, user_object.id)
-
 
 
 def add_choices(choices, collection_object):
