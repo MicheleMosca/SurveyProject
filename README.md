@@ -1,7 +1,7 @@
 # Survey Project
 ![](https://img.shields.io/badge/Python-v3.8-blue?logo=Python)
 ![](https://img.shields.io/badge/Django-v3.2.9-white?logo=Django)
-![](https://img.shields.io/badge/pillow-v9.1.1-brightgreen)
+![](https://img.shields.io/badge/Pillow-v9.1.1-brightgreen)
  
 
 This site has the purpose of creating surveys on image collections. It allows users, typically dermatologists, to make a diagnosis for a collection of images representing skin diseases   
