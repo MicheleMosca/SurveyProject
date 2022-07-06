@@ -21,6 +21,8 @@ Run the server with this command:
 
 The site is now online, you can log in with admin credentials and upload YAML Configuration Files to create new collections
 
+NOTE: The code's documentation can be found to /admin/doc link  
+
 ## Database Scheme Image
 ![Database Image](db_image.png)
 
