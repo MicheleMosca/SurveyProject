@@ -1,3 +1,43 @@
-<h1>Survey Project</h1>
+<!doctype html>
+<html lang="en">
 
-<h3><a href="{% url 'survey:login' %}">Login</a></h3>
+<!-- Font Awesome -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<!-- Google Fonts -->
+<link
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+  rel="stylesheet"
+/>
+<!-- MDB -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.1.0/mdb.min.css"
+  rel="stylesheet"
+/>
+<!-- MDB -->
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.1.0/mdb.min.js"
+></script>
+
+<head>
+    <title>Skin Disease Survey</title>
+</head>
+
+{% load static %}
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script rel="javascript" type="text/javascript" src="{% static 'survey/js/login.js' %}"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+
+<div class="container mt-4 pt-5">
+    <h1 class="text-center">Skin Disease Survey</h1>
+    <p class="text-center mt-4">This site has the purpose of creating surveys on image collections<br>It allows users, typically dermatologists, to make a diagnosis for a collection of images representing skin diseases</p>
+    <div class="col-md-12 text-center mt-5">
+        <a class="btn btn-primary" href="{% url 'survey:home' %}" role="button">Sign In</a>
+    </div>
+</div>
+</html>
