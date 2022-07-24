@@ -1,7 +1,19 @@
 # Survey Project
+![](https://img.shields.io/badge/Python-v3.8-success?logo=Python&logoColor=success)
+![](https://img.shields.io/badge/Django-v3.2.9-white?logo=Django&logoColor=white)
+![](https://img.shields.io/badge/Pillow-v9.1.1-blue)
+ 
+
 This site has the purpose of creating surveys on image collections. It allows users, typically dermatologists, to make a diagnosis for a collection of images representing skin diseases   
 
 ## Setup
+Clone the project from GitHub page:
+
+```
+git clone https://github.com/MicheleMosca/SurveyProject.git
+cd SurveyProject
+```
+
 Run migrate command to create the site's database:
 
 `python manage.py migrate`
@@ -15,6 +27,8 @@ Run the server with this command:
 `python manage.py runserver 8000`
 
 The site is now online, you can log in with admin credentials and upload YAML Configuration Files to create new collections
+
+NOTE: The code's documentation can be found to /admin/doc link  
 
 ## Database Scheme Image
 ![Database Image](db_image.png)
