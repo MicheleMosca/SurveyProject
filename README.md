@@ -7,6 +7,13 @@
 This site has the purpose of creating surveys on image collections. It allows users, typically dermatologists, to make a diagnosis for a collection of images representing skin diseases   
 
 ## Setup
+Clone the project from GitHub page:
+
+```
+git clone https://github.com/MicheleMosca/SurveyProject.git
+cd SurveyProject
+```
+
 Run migrate command to create the site's database:
 
 `python manage.py migrate`
