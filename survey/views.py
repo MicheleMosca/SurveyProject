@@ -341,7 +341,7 @@ def homeView(request):
     **Context**
 
     ``survey_list``
-        A lst of all :model:`survey.Survey` connected to the :model:`auth.User`. It is used to extract all
+        A list of all :model:`survey.Survey` connected to the :model:`auth.User`. It is used to extract all
         :model:`survey.Survey_Collection` that the user is allowed to interact.
 
     **Template**
