@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-/secrets.json
 
 # C extensions
 *.so
@@ -128,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Ignore secrets.json
+*.py[co]
+*.sw[po]
+*~
+/secrets.json
