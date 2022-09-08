@@ -71,6 +71,7 @@ def loginView(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         remember_me = request.POST.get('remember_me')
+        next_page = request.GET.get('next')
 
         user = authenticate(request, username=username, password=password)
 
@@ -82,7 +83,8 @@ def loginView(request):
 
             # else browser session will be as long as the session cookie time "SESSION_COOKIE_AGE"
             response = {
-                'msg': 'Login Success'
+                'msg': 'Login Success',
+                'next': next_page,
             }
             return JsonResponse(response)
         else:

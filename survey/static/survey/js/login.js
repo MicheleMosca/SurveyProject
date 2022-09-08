@@ -7,6 +7,7 @@ $(document).ready(function (){
         const form = $(this);
         const usernameField = form.children('div').children('input').get(0);
         const passwordField = form.children('div').next().children('input').get(0);
+        const next = form.cho
 
         if (usernameField.value === ''){
             Swal.fire({
@@ -43,9 +44,12 @@ $(document).ready(function (){
                             passwordField.value = '';
                         })
                     }
-                    /*else if('msg' in response){
-                        window.location.replace("/survey/home");
-                    }*/
+                    else if ('msg' in response && 'next' in response){
+                        if (response['next'] !== null)
+                            window.location.replace(response['next']);
+                        else
+                            window.location.replace('../home');
+                    }
                 },
 
                 failure: function (error){
