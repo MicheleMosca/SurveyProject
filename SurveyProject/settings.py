@@ -132,10 +132,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = 'survey/static/'
-STATIC_ROOT = BASE_DIR / 'survey/static'
-MEDIA_URL = 'survey/media/'
-MEDIA_ROOT = BASE_DIR / 'survey/media'
+STATIC_URL = 'SurveyProject/survey/static/'
+STATIC_ROOT = BASE_DIR / 'static'
+MEDIA_URL = 'SurveyProject/survey/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
