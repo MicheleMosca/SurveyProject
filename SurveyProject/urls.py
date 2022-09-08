@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.shortcuts import redirect
 from django.urls import path, include
 from django.views.generic import RedirectView
 
@@ -22,5 +21,5 @@ urlpatterns = [
     path('survey/', include('survey.urls')),
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
-    path('', lambda request: redirect('survey/', permanent=True)),
+    path('', RedirectView.as_view(url='SurveyProject/survey/')),
 ]
