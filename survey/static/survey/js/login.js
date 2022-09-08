@@ -43,8 +43,11 @@ $(document).ready(function (){
                             passwordField.value = '';
                         })
                     }
-                    else if('msg' in response){
-                        window.location.replace("/survey/home");
+                    else if ('msg' in response && 'next' in response){
+                        if (response['next'] !== null)
+                            window.location.replace(response['next']);
+                        else
+                            window.location.replace('../home');
                     }
                 },
 
