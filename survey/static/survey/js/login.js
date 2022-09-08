@@ -7,7 +7,6 @@ $(document).ready(function (){
         const form = $(this);
         const usernameField = form.children('div').children('input').get(0);
         const passwordField = form.children('div').next().children('input').get(0);
-        const next = form.cho
 
         if (usernameField.value === ''){
             Swal.fire({
