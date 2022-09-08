@@ -63,6 +63,7 @@
                                 </div>
                             </div>
                         </div>
+                        <input type="hidden" name="next" value="{{ request.GET.next }}"/>
                         <input type="submit" class="btn btn-primary btn-block mb-4" name="sign_in" value="Sign in">
                         <div class="text-center">
                             <p>Don't have an account? <a href="{% url 'survey:register' %}">Sign Up</a></p>
