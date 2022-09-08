@@ -43,9 +43,9 @@ $(document).ready(function (){
                             passwordField.value = '';
                         })
                     }
-                    else if('msg' in response){
+                    /*else if('msg' in response){
                         window.location.replace("/survey/home");
-                    }
+                    }*/
                 },
 
                 failure: function (error){
