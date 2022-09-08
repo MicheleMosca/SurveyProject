@@ -23,5 +23,5 @@ urlpatterns = [
     path('survey/', include('survey.urls')),
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(url='survey/')),
+    #path('', RedirectView.as_view(url='survey/')),
 ]
