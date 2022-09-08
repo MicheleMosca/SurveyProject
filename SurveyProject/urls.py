@@ -17,9 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
 
+import survey.views
+
 urlpatterns = [
     path('survey/', include('survey.urls')),
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(url='SurveyProject/survey/')),
+    path('', include('survey.urls')),
 ]
