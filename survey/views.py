@@ -479,6 +479,10 @@ def collectionView(request):
 
 
 def access(request):
+    """
+    This is the function that redirect login to shibboleth and set the GET variable 'next' to the survey home page
+    by default or with the page that required the login
+    """
     if request.GET.get('next') is not None:
         qp = {
             'next': request.GET.get('next')
@@ -488,4 +492,4 @@ def access(request):
             'next': request.build_absolute_uri(reverse('survey:home'))
         }
 
-    return HttpResponseRedirect('https://services.ing.unimore.it/SurveyProject/shiblogin' + '?' + urlencode(qp))
+    return HttpResponseRedirect(reverse('shiblogin') + '?' + urlencode(qp))
