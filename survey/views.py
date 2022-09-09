@@ -1,11 +1,13 @@
 import yaml
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection, User, Image_Transformation
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
+from django.utils.http import urlencode
+from django.urls import reverse
 
 
 def permissionOnSurvey(request):
@@ -474,3 +476,15 @@ def collectionView(request):
         'img_transformation': img_transformation,
     }
     return render(request, 'survey/collection.html', context)
+
+
+def access(request):
+    redirect_page = 'survey:home'
+    if request.GET.get('next') is not None:
+        redirect_page = request.GET.get('next')
+
+    qp = {
+        'next': request.build_absolute_uri(reverse(redirect_page))
+    }
+
+    return HttpResponseRedirect('https://services.ing.unimore.it/SurveyProject/login' + '?' + urlencode(qp))
