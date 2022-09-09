@@ -19,12 +19,6 @@ def shibboleth_string(field):
 
 
 def shibboleth_login(request):
-    # if request.session.test_cookie_worked():
-    #     request.session.delete_test_cookie()
-    #     return
-    # else:
-    #     print("Cookies must be enabled")
-
     meta = request.META
 
     user, created = User.objects.get_or_create(username=meta["eppn"])
