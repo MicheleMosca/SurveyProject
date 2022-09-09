@@ -488,4 +488,4 @@ def access(request):
             'next': request.build_absolute_uri(reverse('survey:home'))
         }
 
-    return HttpResponseRedirect('https://services.ing.unimore.it/SurveyProject/login' + '?' + urlencode(qp))
+    return HttpResponseRedirect('https://services.ing.unimore.it/SurveyProject/shiblogin' + '?' + urlencode(qp))

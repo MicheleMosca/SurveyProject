@@ -22,6 +22,7 @@ urlpatterns = [
     path('survey/', include('survey.urls')),
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
-    path('test/', shibboleth.shibboleth_test, name='test'),
+    path('shiblogin/', shibboleth.shibboleth_login, name='shiblogin'),
+    path('shibtest/', shibboleth.shibboleth_test, name='shibtest'),
     path('', survey.views.indexView, name='index'),
 ]
