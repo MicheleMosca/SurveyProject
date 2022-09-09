@@ -479,12 +479,13 @@ def collectionView(request):
 
 
 def access(request):
-    redirect_page = 'survey:home'
     if request.GET.get('next') is not None:
-        redirect_page = request.GET.get('next')
-
-    qp = {
-        'next': request.build_absolute_uri(reverse(redirect_page))
-    }
+        qp = {
+            'next': request.GET.get('next')
+        }
+    else:
+        qp = {
+            'next': request.build_absolute_uri(reverse('survey:home'))
+        }
 
     return HttpResponseRedirect('https://services.ing.unimore.it/SurveyProject/login' + '?' + urlencode(qp))
