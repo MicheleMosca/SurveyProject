@@ -113,7 +113,11 @@ def loginView(request):
             }
             return JsonResponse(response)
 
-    return render(request, 'survey/login.html')
+    context = {
+        'redirect': request.build_absolute_uri(reverse('survey:login'))
+    }
+
+    return render(request, 'survey/login.html', context)
 
 
 def logoutUser(request):
