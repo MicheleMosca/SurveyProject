@@ -77,7 +77,7 @@ def loginView(request):
 
     :template:`survey/login.html`
     """
-    if request['isShibboleth'] is 'true':
+    if hasattr(request, 'isShibboleth'):
         meta = request
 
         s = '<pre>\n'
