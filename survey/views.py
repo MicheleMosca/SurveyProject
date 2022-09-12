@@ -77,7 +77,17 @@ def loginView(request):
 
     :template:`survey/login.html`
     """
-    if request.method == 'POST' and request.POST.get('isShibboleth') is not 'true':
+    if request['isShibboleth'] is 'true':
+        meta = request
+
+        s = '<pre>\n'
+        for k, v in meta.items():
+            s += k + ': ' + shibboleth_string(v) + ', type: ' + escape(str(type(v))) + '\n'
+        s += '</pre>\n'
+
+        return HttpResponse(s)
+
+    elif request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         remember_me = request.POST.get('remember_me')
@@ -102,16 +112,6 @@ def loginView(request):
                 'error': 'Username or Password is incorrect'
             }
             return JsonResponse(response)
-
-    if request.POST.get('isShibboleth') is 'true':
-        meta = request.META
-
-        s = '<pre>\n'
-        for k, v in meta.items():
-            s += k + ': ' + shibboleth_string(v) + ', type: ' + escape(str(type(v))) + '\n'
-        s += '</pre>\n'
-
-        return HttpResponse(s)
 
     return render(request, 'survey/login.html')
 
