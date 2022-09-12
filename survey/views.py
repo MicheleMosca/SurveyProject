@@ -1,11 +1,13 @@
 import yaml
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection, User, Image_Transformation
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
+from django.utils.http import urlencode
+from django.urls import reverse
 
 
 def permissionOnSurvey(request):
@@ -474,3 +476,20 @@ def collectionView(request):
         'img_transformation': img_transformation,
     }
     return render(request, 'survey/collection.html', context)
+
+
+def access(request):
+    """
+    This is the function that redirect login to shibboleth and set the GET variable 'next' to the survey home page
+    by default or with the page that required the login
+    """
+    if request.GET.get('next') is not None:
+        qp = {
+            'next': request.GET.get('next')
+        }
+    else:
+        qp = {
+            'next': request.build_absolute_uri(reverse('survey:home'))
+        }
+
+    return HttpResponseRedirect(reverse('shiblogin') + '?' + urlencode(qp))

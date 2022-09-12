@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from . import shibboleth
 import survey
 
 urlpatterns = [
     path('survey/', include('survey.urls')),
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
+    path('shiblogin/', shibboleth.shibboleth_login, name='shiblogin'),
+    path('shibtest/', shibboleth.shibboleth_test, name='shibtest'),
     path('', survey.views.indexView, name='index'),
 ]
