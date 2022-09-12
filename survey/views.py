@@ -1,5 +1,5 @@
 import yaml
-from django.http import JsonResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
@@ -8,6 +8,7 @@ from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection,
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
 from django.utils.http import urlencode
 from django.urls import reverse
+from django.utils.html import escape
 
 
 def permissionOnSurvey(request):
@@ -61,6 +62,13 @@ def registerView(request):
     return render(request, 'survey/register.html')
 
 
+def shibboleth_string(field):
+    if type(field) is str:
+        return field.encode('latin1').decode()
+    else:
+        return str(field)
+
+
 def loginView(request):
     """
     Login Page
@@ -69,7 +77,7 @@ def loginView(request):
 
     :template:`survey/login.html`
     """
-    if request.method == 'POST':
+    if request.method == 'POST' and request.POST.get('isShibboleth') is not 'true':
         username = request.POST.get('username')
         password = request.POST.get('password')
         remember_me = request.POST.get('remember_me')
@@ -94,6 +102,16 @@ def loginView(request):
                 'error': 'Username or Password is incorrect'
             }
             return JsonResponse(response)
+
+    if request.POST.get('isShibboleth') is 'true':
+        meta = request.META
+
+        s = '<pre>\n'
+        for k, v in meta.items():
+            s += k + ': ' + shibboleth_string(v) + ', type: ' + escape(str(type(v))) + '\n'
+        s += '</pre>\n'
+
+        return HttpResponse(s)
 
     return render(request, 'survey/login.html')
 
