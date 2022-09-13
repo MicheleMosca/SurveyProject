@@ -509,7 +509,6 @@ def access(request):
 
 @csrf_exempt
 def shib(request):
-    data = request.POST.get('data')
-    response = data['eppn']
+    response = request.POST.get('eppn')
 
     return HttpResponse(response)
