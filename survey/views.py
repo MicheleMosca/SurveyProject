@@ -514,7 +514,7 @@ def get_success_url(meta):
 
 @csrf_exempt
 def shib(request):
-    meta = request.POST
+    meta = request.META
 
     user, created = User.objects.get_or_create(username=meta["eppn"])
     if created:
