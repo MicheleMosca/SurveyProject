@@ -1,6 +1,8 @@
 import yaml
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
@@ -505,9 +507,9 @@ def access(request):
     return HttpResponseRedirect('https://services.ing.unimore.it/Shibboleth/login' + '?' + urlencode(qp))
 
 
+@csrf_exempt
 def shib(request):
-
-    data = request.session.get('data')
+    data = request.POST.get('data')
     response = data['eppn']
 
     return HttpResponse(response)
