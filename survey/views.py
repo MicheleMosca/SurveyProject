@@ -531,4 +531,5 @@ def shib(request):
     login(request, user)
 
     # return HttpResponse(user)
-    return HttpResponseRedirect(get_success_url(meta))
+    # return HttpResponseRedirect(get_success_url(meta))
+    return redirect('survey:home')
