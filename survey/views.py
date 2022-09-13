@@ -527,9 +527,8 @@ def shib(request):
     if user.last_name == '' and "sn" in meta:
         user.last_name = shibboleth_string(meta["sn"]).title()
 
-    re = meta['requestObj']
     user.save()
-    login(re, user)
+    # login(re, user)
 
-    # return HttpResponse('OK', status=200)
-    return HttpResponseRedirect(get_success_url(meta))
+    return HttpResponse(user)
+    # return HttpResponseRedirect(get_success_url(meta))
