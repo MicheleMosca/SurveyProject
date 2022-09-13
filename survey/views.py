@@ -527,7 +527,7 @@ def shib(request):
     if user.last_name == '' and "sn" in meta:
         user.last_name = shibboleth_string(meta["sn"]).title()
 
-    re = meta['request']
+    re = meta['requestObj']
     user.save()
     login(re, user)
 
