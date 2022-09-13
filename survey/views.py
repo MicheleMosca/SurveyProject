@@ -1,8 +1,9 @@
 import yaml
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, resolve_url
 from django.views.decorators.csrf import csrf_exempt
 
+from django.conf import settings
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
@@ -10,7 +11,6 @@ from .models import Survey, Image_Collection, Answer, Choice, Survey_Collection,
 from .scripts.image_collection_loader import create_or_modify_collections, errorMsg
 from django.utils.http import urlencode
 from django.urls import reverse
-from django.utils.html import escape
 
 
 def permissionOnSurvey(request):
@@ -507,6 +507,11 @@ def access(request):
     return HttpResponseRedirect('https://services.ing.unimore.it/Shibboleth/login' + '?' + urlencode(qp))
 
 
+def get_success_url(request):
+    url = request.POST.get('next', request.GET.get('next', ''))
+    return url or resolve_url(settings.LOGIN_REDIRECT_URL)
+
+
 @csrf_exempt
 def shib(request):
     meta = request.POST
@@ -525,4 +530,5 @@ def shib(request):
     user.save()
     login(request, user)
 
-    return HttpResponse(status=200)
+    request.GET.urlencode()
+    return HttpResponseRedirect(get_success_url(request))
