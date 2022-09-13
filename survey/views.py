@@ -507,6 +507,6 @@ def access(request):
 
 def shib(request):
 
+    response = request
 
-
-    return None
+    return HttpResponse(response)
