@@ -509,6 +509,20 @@ def access(request):
 
 @csrf_exempt
 def shib(request):
-    response = request.POST.get('eppn')
+    meta = request.POST
 
-    return HttpResponse(response)
+    user, created = User.objects.get_or_create(username=meta["eppn"])
+    if created:
+        user.set_unusable_password()
+
+    if user.email == '' and "mail" in meta:
+        user.email = shibboleth_string(meta["mail"])
+    if user.first_name == '' and "givenName" in meta:
+        user.first_name = shibboleth_string(meta["givenName"]).title()
+    if user.last_name == '' and "sn" in meta:
+        user.last_name = shibboleth_string(meta["sn"]).title()
+
+    user.save()
+    login(request, user)
+
+    return HttpResponse(status=200)
