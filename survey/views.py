@@ -514,7 +514,7 @@ def get_success_url(meta):
 
 @csrf_exempt
 def shib(request):
-    meta = request.META
+    meta = request.POST
 
     user, created = User.objects.get_or_create(username=meta["eppn"])
     if created:
@@ -528,7 +528,7 @@ def shib(request):
         user.last_name = shibboleth_string(meta["sn"]).title()
 
     user.save()
-    # login(re, user)
+    login(request, user)
 
-    return HttpResponse(user)
-    # return HttpResponseRedirect(get_success_url(meta))
+    # return HttpResponse(user)
+    return HttpResponseRedirect(get_success_url(meta))
