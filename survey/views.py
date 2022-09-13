@@ -530,6 +530,6 @@ def shib(request):
     user.save()
     login(request, user)
 
-    return HttpResponse('OK', status=200)
-    # request.GET.urlencode()
-    # return HttpResponseRedirect(get_success_url(request))
+    # return HttpResponse('OK', status=200)
+    request.GET.urlencode()
+    return HttpResponseRedirect(get_success_url(request))
