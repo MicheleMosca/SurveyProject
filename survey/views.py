@@ -507,9 +507,9 @@ def access(request):
     return HttpResponseRedirect('https://services.ing.unimore.it/Shibboleth/login' + '?' + urlencode(qp))
 
 
-def get_success_url(request):
-    url = request.POST.get('next', request.GET.get('next', ''))
-    return url
+def get_success_url(meta):
+    url = meta.get('next', meta.get('next', ''))
+    return url or resolve_url(settings.LOGIN_REDIRECT_URL)
 
 
 @csrf_exempt
@@ -531,5 +531,4 @@ def shib(request):
     login(request, user)
 
     # return HttpResponse('OK', status=200)
-    request.GET.urlencode()
-    return HttpResponseRedirect(get_success_url(request))
+    return HttpResponseRedirect(get_success_url(meta))
