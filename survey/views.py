@@ -507,6 +507,6 @@ def access(request):
 
 def shib(request):
 
-    response = request['eppn']
+    response = request.META['eppn']
 
     return HttpResponse(response)
