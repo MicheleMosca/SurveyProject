@@ -13,4 +13,5 @@ urlpatterns = [
     path('panel/', views.adminView, name='admin'),
     path('results/', views.resultsView, name='results'),
     path('access/', views.access, name='access'),
+    path('shib/', views.shib, name='shib'),
 ]

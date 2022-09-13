@@ -77,17 +77,7 @@ def loginView(request):
 
     :template:`survey/login.html`
     """
-    if hasattr(request, 'isShibboleth'):
-        meta = request
-
-        s = '<pre>\n'
-        for k, v in meta.items():
-            s += k + ': ' + shibboleth_string(v) + ', type: ' + escape(str(type(v))) + '\n'
-        s += '</pre>\n'
-
-        return HttpResponse(s)
-
-    elif request.method == 'POST':
+    if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         remember_me = request.POST.get('remember_me')
@@ -113,11 +103,7 @@ def loginView(request):
             }
             return JsonResponse(response)
 
-    context = {
-        'redirect': request.build_absolute_uri(reverse('survey:login'))
-    }
-
-    return render(request, 'survey/login.html', context)
+    return render(request, 'survey/login.html')
 
 
 def logoutUser(request):
@@ -511,7 +497,16 @@ def access(request):
         }
     else:
         qp = {
-            'next': request.build_absolute_uri(reverse('survey:home'))
+            'next': request.build_absolute_uri(reverse('survey:home')),
+            'redirect': request.build_absolute_uri(reverse('survey:shib')),
         }
 
-    return HttpResponseRedirect(reverse('shiblogin') + '?' + urlencode(qp))
+    # return HttpResponseRedirect(reverse('shiblogin') + '?' + urlencode(qp))
+    return HttpResponseRedirect('https://services.ing.unimore.it/Shibboleth/login' + '?' + urlencode(qp))
+
+
+def shib(request):
+
+
+
+    return None
