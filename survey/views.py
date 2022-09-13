@@ -532,4 +532,4 @@ def shib(request):
 
     # return HttpResponse('OK', status=200)
     request.GET.urlencode()
-    return HttpResponse(get_success_url(request))
+    return HttpResponseRedirect(get_success_url(request))
