@@ -509,7 +509,7 @@ def access(request):
 
 def get_success_url(request):
     url = request.POST.get('next', request.GET.get('next', ''))
-    return url or resolve_url(settings.LOGIN_REDIRECT_URL)
+    return url
 
 
 @csrf_exempt
