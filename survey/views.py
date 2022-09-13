@@ -508,7 +508,7 @@ def access(request):
 
 
 def get_success_url(meta):
-    url = meta.get('next', meta.get('next', ''))
+    url = meta.get('next', '')
     return url or resolve_url(settings.LOGIN_REDIRECT_URL)
 
 
