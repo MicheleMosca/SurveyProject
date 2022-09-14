@@ -64,13 +64,6 @@ def registerView(request):
     return render(request, 'survey/register.html')
 
 
-def shibboleth_string(field):
-    if type(field) is str:
-        return field.encode('latin1').decode()
-    else:
-        return str(field)
-
-
 def loginView(request):
     """
     Login Page
@@ -499,9 +492,10 @@ def access(request):
         }
     else:
         qp = {
-            'next': request.build_absolute_uri(reverse('survey:home')),
-            'redirect': request.build_absolute_uri(reverse('survey:shib')),
+            'next': request.build_absolute_uri(reverse('survey:home'))
         }
+
+    qp['redirect'] = request.build_absolute_uri(reverse('survey:shib'))
 
     # return HttpResponseRedirect(reverse('shiblogin') + '?' + urlencode(qp))
     return HttpResponseRedirect('https://services.ing.unimore.it/Shibboleth/login' + '?' + urlencode(qp))
@@ -512,24 +506,29 @@ def get_success_url(meta):
     return url or resolve_url(settings.LOGIN_REDIRECT_URL)
 
 
-@csrf_exempt
+def shibboleth_string(field):
+    if type(field) is str:
+        return field.encode('latin1').decode()
+    else:
+        return str(field)
+
+
 def shib(request):
-    meta = request.POST
+    # meta = request.POST
+    #
+    # user, created = User.objects.get_or_create(username=meta["eppn"])
+    # if created:
+    #     user.set_unusable_password()
+    #
+    # if user.email == '' and "mail" in meta:
+    #     user.email = shibboleth_string(meta["mail"])
+    # if user.first_name == '' and "givenName" in meta:
+    #     user.first_name = shibboleth_string(meta["givenName"]).title()
+    # if user.last_name == '' and "sn" in meta:
+    #     user.last_name = shibboleth_string(meta["sn"]).title()
+    #
+    # user.save()
+    # login(request, user)
 
-    user, created = User.objects.get_or_create(username=meta["eppn"])
-    if created:
-        user.set_unusable_password()
-
-    if user.email == '' and "mail" in meta:
-        user.email = shibboleth_string(meta["mail"])
-    if user.first_name == '' and "givenName" in meta:
-        user.first_name = shibboleth_string(meta["givenName"]).title()
-    if user.last_name == '' and "sn" in meta:
-        user.last_name = shibboleth_string(meta["sn"]).title()
-
-    user.save()
-    login(request, user)
-
-    # return HttpResponse(user)
+    return HttpResponse(request)
     # return HttpResponseRedirect(get_success_url(meta))
-    return redirect('survey:home')
