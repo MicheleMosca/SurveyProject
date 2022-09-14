@@ -25,14 +25,15 @@ def shibboleth_login(request):
     if created:
         user.set_unusable_password()
 
-    if user.email == '' and "mail" in meta:
-        user.email = shibboleth_string(meta["mail"])
-    if user.first_name == '' and "givenName" in meta:
-        user.first_name = shibboleth_string(meta["givenName"]).title()
-    if user.last_name == '' and "sn" in meta:
-        user.last_name = shibboleth_string(meta["sn"]).title()
+        if user.email == '' and "mail" in meta:
+            user.email = shibboleth_string(meta["mail"])
+        if user.first_name == '' and "givenName" in meta:
+            user.first_name = shibboleth_string(meta["givenName"]).title()
+        if user.last_name == '' and "sn" in meta:
+            user.last_name = shibboleth_string(meta["sn"]).title()
 
-    user.save()
+        user.save()
+
     login(request, user)
 
     request.GET.urlencode()
