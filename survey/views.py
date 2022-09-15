@@ -515,7 +515,6 @@ def shibboleth_string(field):
 
 def shib(request):
 
-    raise Exception
     # meta = request.POST
     #
     # user, created = User.objects.get_or_create(username=meta["eppn"])
@@ -532,5 +531,5 @@ def shib(request):
     # user.save()
     # login(request, user)
 
-    return HttpResponse(request)
+    return HttpResponse(request.body)
     # return HttpResponseRedirect(get_success_url(meta))
