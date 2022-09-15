@@ -514,6 +514,8 @@ def shibboleth_string(field):
 
 
 def shib(request):
+
+    raise Exception
     # meta = request.POST
     #
     # user, created = User.objects.get_or_create(username=meta["eppn"])
