@@ -1,3 +1,5 @@
+import json
+
 import yaml
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, resolve_url
@@ -515,21 +517,35 @@ def shibboleth_string(field):
 
 def shib(request):
 
-    # meta = request.POST
-    #
-    # user, created = User.objects.get_or_create(username=meta["eppn"])
-    # if created:
-    #     user.set_unusable_password()
-    #
-    # if user.email == '' and "mail" in meta:
-    #     user.email = shibboleth_string(meta["mail"])
-    # if user.first_name == '' and "givenName" in meta:
-    #     user.first_name = shibboleth_string(meta["givenName"]).title()
-    # if user.last_name == '' and "sn" in meta:
-    #     user.last_name = shibboleth_string(meta["sn"]).title()
-    #
-    # user.save()
-    # login(request, user)
+    meta = json.load(request.session.get('data'))
 
-    return HttpResponse(request.body)
-    # return HttpResponseRedirect(get_success_url(meta))
+    user, created = User.objects.get_or_create(username=meta["eppn"])
+    if created:
+        user.set_unusable_password()
+
+        if user.email == '' and "mail" in meta:
+            user.email = shibboleth_string(meta["mail"])
+        if user.first_name == '' and "givenName" in meta:
+            user.first_name = shibboleth_string(meta["givenName"]).title()
+        if user.last_name == '' and "sn" in meta:
+            user.last_name = shibboleth_string(meta["sn"]).title()
+
+        user.save()
+
+    login(request, user)
+
+    # return HttpResponse(request)
+    return HttpResponseRedirect(get_success_url(meta))
+
+
+# def prova(request):
+#     data = dict()
+#     data['dato1'] = "pw"
+#     data['dato2'] = "sw"
+#
+#     # response = JsonResponse(data)
+#     # response['Location'] = reverse('survey:shib')
+#
+#     request.session['data'] = json.dumps(data)
+#
+#     return redirect('survey:shib')
