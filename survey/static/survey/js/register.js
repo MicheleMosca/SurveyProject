@@ -35,7 +35,7 @@ $(document).ready(function (){
                             showConfirmButton: false,
                             timer: 1450
                         }).then((result) => {
-                            window.location.replace("/survey/login");
+                            window.location.replace("../login");
                         })
                     }
                 },

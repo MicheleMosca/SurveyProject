@@ -74,7 +74,7 @@ class Choice(models.Model):
 
 class Answer(models.Model):
     """
-    Stores an answer of :model:`auth.User` related to :model:`survey.Image_Collection` and selected from a list of
+    Stores an answer of :model:`auth.User` related to :model:`survey.Image_Collection` selected by a list of
     possibly answer stored in :model:`survey.Choice`. The user also can write a small comment that justify his choice.
     """
     image_collection = models.ForeignKey(Image_Collection, on_delete=models.CASCADE)

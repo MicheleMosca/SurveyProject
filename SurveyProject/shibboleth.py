@@ -40,7 +40,7 @@ def shibboleth_login(request):
     return HttpResponseRedirect(get_success_url(request))
 
 
-def shibboleth_test(request: HttpRequest):
+def shibboleth_test(request):
     meta = request.META
 
     s = '<pre>\n'
