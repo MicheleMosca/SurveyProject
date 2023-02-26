@@ -22,8 +22,8 @@ Write a `secrets.json` file with the configurations of the server and databese, 
 
 ```json
 {
-    "SECRET_KEY": "django-insecure-+6qr1e+iz55$p-6#0p)6th*n%y=s-z(q8!kjc_k&e&5tedk$bc",
-    "DB_PASSWORD": "hRfg0mv6vBEbY^Hc0xorQ5aC@"
+    "SECRET_KEY": "YOUR_SECRET_KEY_HERE",
+    "DB_PASSWORD": "YOUR_DB_PASSWORD_HERE"
 }
 ```
 
@@ -83,7 +83,7 @@ To describe a collection there are six different tags:
 - `images:`
     Here you can add images to collection by specify the file's path and an optional image name. If the name field is not writen the default name is the filename without extension.
     
-    ```
+    ```yaml
     -   path: "IMAGE_FILE_PATH"
         name: "IMAGE_NAME"
     ```
