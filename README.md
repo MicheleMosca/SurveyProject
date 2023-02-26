@@ -9,9 +9,22 @@ This site has the purpose of creating surveys on image collections. It allows us
 ## Setup
 Clone the project from GitHub page:
 
-```
+```bash
 git clone https://github.com/MicheleMosca/SurveyProject.git
 cd SurveyProject
+```
+
+Install python dependecies:
+
+`python -m pip install -r requirements.txt`
+
+Write a `secrets.json` file with the configurations of the server and databese, like this:
+
+```json
+{
+    "SECRET_KEY": "django-insecure-+6qr1e+iz55$p-6#0p)6th*n%y=s-z(q8!kjc_k&e&5tedk$bc",
+    "DB_PASSWORD": "hRfg0mv6vBEbY^Hc0xorQ5aC@"
+}
 ```
 
 Run migrate command to create the site's database:
@@ -88,7 +101,7 @@ To describe a collection there are six different tags:
     
 ### YAML Image Collection File Examples
 Creation of a new collection:
-```
+```yaml
 collection:
     description: "Description of the collection"
     transformations: ['flip(0.5)', 'mirror(0.5)', 'contrast(0.2)']  # Write transformation that can be applied with its probability
@@ -109,7 +122,7 @@ collection:
 ```
 
 Modify the collection with id=1 changing the description, adding a new image and a new user:
-```
+```yaml
 collection:
     id: 1                                               # Insert id only if you want to add something to an existing collection
     description: "Description of the collection modified"
@@ -120,3 +133,13 @@ collection:
     users: ['user3']                         # list new users who will get the access to the collection
 ```
 
+## Documentation
+Here there is the link of the project documentation:
+[Survey Project Documentation](Elaborato_Michele_Mosca.pdf)
+
+## Presentation
+Here there is the link of the presentation:
+[Survey Project Presentation](https://docs.google.com/presentation/d/11f0ej2Bs47WX_VXCaAtfzqM5t35tTbep/edit?usp=sharing&ouid=107652794691641788775&rtpof=true&sd=true)
+
+## Credits
+L'idea di progetto nasce con la finalità di sostenere il tirocinio formativo presso l'università degli studi di Modena e Reggio Emilia e sostenimento della prova finale di conclusione della laurea triennale in Ignegneria Informatica. Realizzato da Michele Mosca.
