@@ -43,8 +43,8 @@ The site is now online, you can log in with admin credentials and upload YAML Co
 
 NOTE: The code's documentation can be found to /admin/doc link  
 
-## Database Scheme Image
-![Database Image](db_image.png)
+## Collection Page
+![Collection Page](collection-page.png)
 
 ### Database Scheme
 This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2GqZGYSDZ8)
@@ -132,6 +132,9 @@ collection:
 
     users: ['user3']                         # list new users who will get the access to the collection
 ```
+
+## Database Scheme
+![Database Scheme](db_image.png)
 
 ## Documentation
 Here there is the link of the project documentation:
