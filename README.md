@@ -65,7 +65,7 @@ This is the link to [DB Designer Scheme](https://dbdesigner.page.link/egjKR3X2Gq
 ## How to write YAML Configuration File
 Create a file with .yaml extension and start to define a new collection with the collection tag:
 
-```yaml collection:```
+`collection:`
 
 To describe a collection there are six different tags:
 
